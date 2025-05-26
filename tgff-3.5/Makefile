@@ -5,8 +5,9 @@
 CC := g++
 TO := -o
 
-C_OPTS := -O0 -ffor-scope -ftemplate-depth-50 \
+C_OPTS := -O0 -ftemplate-depth-50 \
   -DROB_DEBUG -ggdb -O0 -pedantic -I.
+# Removed deprecated -ffor-scope flag
 
 L_OPTS := -lstdc++ -lm
 

@@ -7,7 +7,7 @@
 #include "RAlgo.h"
 #include "RGen.h"
 #include "RString.h"
-
+#include <algorithm> // Explicit specification required when using the C++ standard library
 #include <typeinfo>
 #include <cstddef>
 #include <set>

@@ -16,6 +16,7 @@
 #include <cstddef>
 #include <iosfwd>
 #include <limits>
+#include <algorithm> // Explicit specification required when using the C++ standard library
 
 namespace rstd {
 

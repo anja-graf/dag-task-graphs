@@ -465,4 +465,10 @@ void RGen::gen_test_data(ostream & os) {
 		"#endif\n";
 }
 
+// Added to avoid undefinded reference error for operator function without any arguments
+RGen::result_type RGen::operator()() {
+    // returns number between zero and max and converts it to result_type
+    return static_cast<result_type>(flat01() * max()); 
+}
+
 }

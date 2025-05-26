@@ -45,9 +45,10 @@ FVector<N, T>::FVector(const T & a, const T & b, const T & c, const T & d) {
 template <int DIM, typename T>
 FVector<DIM, T> &
 FVector<DIM, T>::operator=(const self & a) {
-	register const T * term = data_ + DIM;
-	register T * i = data_;
-	register const T * j = a.data_;
+	// register keyword is deprecated and thus removed here
+	const T * term = data_ + DIM;
+	T * i = data_;
+	const T * j = a.data_;
 
 	for (; i < term; ++i, ++j) {
 		*i = *j;

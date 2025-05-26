@@ -7,8 +7,10 @@ bool eps_is_equal_to(const T & a, const T & b, const T & ref) {
 /* The constant is a little annoying.  It needs to allow enough
 fuzz for multiple operations. */
 
+	/* Implicit using declaration made explicit for the 
+	function max as part of the C++ standard library */
 	bool val = fabs(a - b) <=
-		max(ref, static_cast<T>(std::max(fabs(a), fabs(b)))) *
+		std::max(ref, static_cast<T>(std::max(fabs(a), fabs(b)))) *
 		std::numeric_limits<T>::epsilon() * 512;
 #if 0
 	if (! val) {

@@ -8,6 +8,8 @@
 #include "HolderPtr.h"
 #include "Interface.h"
 #include "RVector.h"
+// Explicit specification required when using the C++ standard library
+#include <limits>  // für std::numeric_limits
 
 #include <iosfwd>
 
@@ -34,6 +36,12 @@ public:
 // Final
 	void set_seed(int seed = 1);
 	void set_seed(int i, int j, int k, int l);
+
+// --- URBG-kompatibel für std::shuffle (C++11) ---
+	using result_type = unsigned long;
+	static constexpr result_type min() { return 0; }
+	static constexpr result_type max() { return std::numeric_limits<result_type>::max(); }
+	result_type operator()();
 
 // [0, 1)
 	double flat01();

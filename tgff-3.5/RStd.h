@@ -91,10 +91,13 @@ inline void rconfirm(bool x, const char * message) { if (! x) rexit(message); }
 #define Rdump(x) (std::cerr << #x << ": " << (x) << std::endl)
 #define Rdumphex(x) (rstd::cerrhex << #x << ": 0x" << (x) << std::endl)
 
-template <bool> struct static_assert;
-template<> struct static_assert<true> { static_assert() {} };
+//template <bool> struct static_assert;
+//template<> struct static_assert<true> { static_assert() {} };
 // No false definition.  Compile-time failure if assertion fails.
-#define STATIC_ASSERT(x) rstd::static_assert<(x)>()
+// #define STATIC_ASSERT(x) rstd::static_assert<(x)>()
+// Commented out deprecated use of makro and created new one
+#define STATIC_ASSERT(x) static_assert(x, "STATIC_ASSERT failed: " #x)
+
 
 template <int I>
 struct int_to_type {

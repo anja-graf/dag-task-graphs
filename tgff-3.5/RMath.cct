@@ -73,7 +73,9 @@ float interval_round(float a, P period) {
 /*===========================================================================*/
 template<typename D>
 D clip(const D & x, D low, D high) {
-	return min(max(x, low), high);
+	/* Implicit using declaration made explicit for the 
+	function min as part of the C++ standard library */
+	return std::min(std::max(x, low), high);
 }
 
 /*===========================================================================*/

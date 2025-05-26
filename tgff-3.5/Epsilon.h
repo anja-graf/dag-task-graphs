@@ -10,6 +10,8 @@
 #include <limits>
 #include <cmath>
 
+// Explicit specification required when using the C++ standard library
+#include <algorithm>
 #ifdef ROB_DEBUG
 #	include "RStd.h"
 #endif

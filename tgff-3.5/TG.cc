@@ -212,7 +212,9 @@ void TG::series_parallel_generate_xover(int local_xover, int global_xover)
 {
 	RVector<long> tmp = series_parallel_get_all_parents();
 	while (local_xover > 0) {
-		random_shuffle(tmp.begin(), tmp.end(), RGen::gen());
+		/* Implicit using declaration made explicit for the 
+		function shuffle as part of the C++ standard library */
+		std::shuffle(tmp.begin(), tmp.end(), RGen::gen());
 
 		long p = -1;
 		RVector<long>::iterator iter = tmp.begin(); 
@@ -226,7 +228,9 @@ void TG::series_parallel_generate_xover(int local_xover, int global_xover)
 		if (p != -1) {
 			RVector<long> tmp2 = (*this)[p].series_children_;
 			tmp2.push_back(p);
-			random_shuffle(tmp2.begin(), tmp2.end(), RGen::gen());
+			/* Implicit using declaration made explicit for the 
+			function shuffle as part of the C++ standard library */
+			std::shuffle(tmp2.begin(), tmp2.end(), RGen::gen());
 
 			bool done = false;
 			RVector<long>::iterator i = tmp2.begin(), j = tmp2.begin();
@@ -257,7 +261,7 @@ void TG::series_parallel_generate_xover(int local_xover, int global_xover)
 		tmp.push_back(x);
 	}
 	while (global_xover > 0) {
-		random_shuffle(tmp.begin(), tmp.end(), RGen::gen());
+		std::shuffle(tmp.begin(), tmp.end(), RGen::gen());
 		bool done = false;
 		RVector<long>::iterator i = tmp.begin(), j = tmp.begin();
 		++j;
@@ -387,7 +391,7 @@ void TG::augment() {
 		MAP(x, size_vertex()) {
 			indx.push_back(x);
 		}
-		random_shuffle(indx.begin(), indx.end(), RGen::gen());
+		std::shuffle(indx.begin(), indx.end(), RGen::gen());
 
 		long i = 0;
 		int c = 0;
