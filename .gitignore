@@ -4,3 +4,5 @@
 *.vcg
 *.tgffopt
 tgff
+target/
+Cargo.lock
