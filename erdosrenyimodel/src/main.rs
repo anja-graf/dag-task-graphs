@@ -56,6 +56,23 @@ impl Graph {
         Ok(())
     }
 
+    // Generate a comment like dot -Tpng graph.dot -o graph.png
+    fn dot_to_svg(input_dot: &str, output_svg: &str) -> io::Result<()> {
+        let status = Command::new("dot")
+            .arg("-Tsvg")
+            .arg(input_dot)
+            .arg("-o")
+            .arg(output_svg)
+            .status()?;
+    
+        if status.success() {
+            println!("SVG erfolgreich erstellt: {}", output_svg);
+        } else {
+            eprintln!("Fgraphehler beim Konvertieren mit Graphviz (dot).");
+        }
+    
+        Ok(())
+    }
 }
 
 fn main() -> Result<()> {
@@ -65,6 +82,7 @@ fn main() -> Result<()> {
     let graph = Graph::new_erdos_renyi_var2(n, 2);
 
     graph.write_dot("graph.dot")?;
+    Graph::dot_to_svg("graph.dot","graph.svg")?;
 
     println!("Graph gespeichert als 'graph.dot' ");
     Ok(())
