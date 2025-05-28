@@ -26,6 +26,7 @@ impl Graph {
     }
 
     fn new_erdos_renyi_var2(n: i32, m: i32) -> Self {
+        assert!(m <= n*(n-1)/2,"Es wurden mehr Kanten vogegeben als möglich sind!"); //Kantenanzahl Vollständiger Graph, siehe: https://de.wikipedia.org/wiki/Vollst%C3%A4ndiger_Graph
         let mut edges = Vec::new();
         let mut rng = rand::thread_rng();
 
@@ -39,7 +40,20 @@ impl Graph {
                 counter += 1;
             } 
         }
-
+        
+        // Alternative Generierung:
+        // let mut possible_edges = Vec::new();
+        // for i in 0..n {
+        //     for j in (i + 1)..n {
+        //         possible_edges.push((i, j));
+        //     }
+        // }
+        // let mut rng = thread_rng();
+        // let edges = possible_edges
+        //     .choose_multiple(&mut rng, m)
+        //     .cloned()
+        //     .collect();
+        
         Graph { nodes: n, edges }
     }
 

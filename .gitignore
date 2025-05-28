@@ -6,3 +6,5 @@
 tgff
 target/
 Cargo.lock
+*.dot
+*.svg
