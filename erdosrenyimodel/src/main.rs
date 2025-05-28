@@ -25,6 +25,23 @@ impl Graph {
         Graph { nodes: n, edges }
     }
 
+    fn new_erdos_renyi_var2(n: i32, m: i32) -> Self {
+        let mut edges = Vec::new();
+        let mut rng = rand::thread_rng();
+
+        let mut counter = 0;
+        while counter < m {
+            let i = rng.gen_range(0..=n);
+            let j = rng.gen_range(0..=n);
+            println!("{:?}",(i,j));
+            if i != j && ! edges.contains(&(i,j)) {
+                edges.push((i, j));
+                counter += 1;
+            } 
+        }
+
+        Graph { nodes: n, edges }
+    }
 
     fn write_dot(&self, filename: &str) -> Result<()> {
         let mut file = File::create(filename)?;
@@ -43,9 +60,9 @@ impl Graph {
 
 fn main() -> Result<()> {
     let n = 3;
-    let p = 0.3;
+    
 
-    let graph = Graph::new_erdos_renyi_var1(n, p);
+    let graph = Graph::new_erdos_renyi_var2(n, 2);
 
     graph.write_dot("graph.dot")?;
 
