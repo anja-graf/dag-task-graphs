@@ -3,14 +3,16 @@ use std::fs::File;
 use std::io::{Result, Write};
 use std::process::Command;
 use std::io;
+use clap::Parser;
 
 struct Graph {
-    nodes: i32,
+    //nodes: i32,
     edges: Vec<(i32, i32)>,
 }
 
 impl Graph {
     fn new_erdos_renyi_var1(n: i32, p: f64) -> Self {
+        assert!(0.0 <= p && p <= 1.0, "The probability has to be between 0 and 1!");
         let mut edges = Vec::new();
         let mut rng = rand::thread_rng();
 
@@ -22,20 +24,21 @@ impl Graph {
             }
         }
 
-        Graph { nodes: n, edges }
+        // Graph { nodes: n, edges }
+        Graph {edges }
     }
 
     fn new_erdos_renyi_var2(n: i32, m: i32) -> Self {
-        assert!(m <= n*(n-1)/2,"Es wurden mehr Kanten vogegeben als möglich sind!"); //Kantenanzahl Vollständiger Graph, siehe: https://de.wikipedia.org/wiki/Vollst%C3%A4ndiger_Graph
+        assert!(m <= n*(n-1)/2,"The number of edges is higher than possible!"); //Kantenanzahl Vollständiger Graph, siehe: https://de.wikipedia.org/wiki/Vollst%C3%A4ndiger_Graph
         let mut edges = Vec::new();
         let mut rng = rand::thread_rng();
 
         let mut counter = 0;
         while counter < m {
-            let i = rng.gen_range(0..=n);
-            let j = rng.gen_range(0..=n);
-            println!("{:?}",(i,j));
-            if i != j && ! edges.contains(&(i,j)) {
+            let i = rng.gen_range(0..n);
+            let j = rng.gen_range(0..n);
+            //println!("{:?}",edges);
+            if i != j && !(edges.contains(&(i,j)) || edges.contains(&(j,i))) {
                 edges.push((i, j));
                 counter += 1;
             } 
@@ -54,12 +57,13 @@ impl Graph {
         //     .cloned()
         //     .collect();
         
-        Graph { nodes: n, edges }
+        //Graph { nodes: n, edges }
+        Graph {edges }
     }
 
     fn write_dot(&self, filename: &str) -> Result<()> {
         let mut file = File::create(filename)?;
-        println!("Generate graph with {} nodes ",self.nodes);
+        //println!("Generate graph with {} nodes ",self.nodes);
         writeln!(file, "graph {{")?;
 
         for (u, v) in &self.edges {
@@ -67,6 +71,7 @@ impl Graph {
         }
 
         writeln!(file, "}}")?;
+        println!("DOT successfully created '{}'", filename);
         Ok(())
     }
 
@@ -80,24 +85,62 @@ impl Graph {
             .status()?;
     
         if status.success() {
-            println!("SVG erfolgreich erstellt: {}", output_svg);
+            println!("SVG successfully created '{}'", output_svg);
         } else {
-            eprintln!("Fgraphehler beim Konvertieren mit Graphviz (dot).");
+            eprintln!("Error while converting with Graphviz (dot).");
         }
     
         Ok(())
     }
 }
 
+#[derive(Parser, Debug)]
+#[command(name = "erdosrenyimodel", about = "Generates a random G(n, m) or G(n, p) graph")]
+struct Args {
+    /// Number of nodes
+    #[arg(short, long)]
+    nodes: i32,
+
+    /// Number of edges
+    #[arg(short, long, default_value="2")]
+    edges: i32,
+
+    /// Probability for edges
+    #[arg(short, long, default_value="0.5")]
+    probability: f64,
+
+    /// path for output file in dot format
+    #[arg(short, long, default_value = "graph.dot")]
+    dot: String,
+
+    /// path for output file in svg format
+    #[arg(short, long, default_value = "graph.svg")]
+    svg: String,
+
+    /// option for variant 1 or 2
+    #[arg(short, long, default_value = "1")]
+    option: i32,
+}
+
 fn main() -> Result<()> {
-    let n = 3;
-    
+    let args = Args::parse();
+    assert!(args.nodes > 1,"There should be more than one node!");
+    assert!(!(args.option == 1 && args.option == 2),"There is only option 1 or 2");
+    assert!(args.dot != args.svg,"The names should not be both the same");
 
-    let graph = Graph::new_erdos_renyi_var2(n, 2);
 
-    graph.write_dot("graph.dot")?;
-    Graph::dot_to_svg("graph.dot","graph.svg")?;
+    if args.option == 1 {
+        println!("The graph will be generated with option 1, nodes = {} and probability = {}", args.nodes, args.probability);
+        let graph = Graph::new_erdos_renyi_var1(args.nodes, args.probability);
+        graph.write_dot(&args.dot)?;
+    } else if args.option == 2 {
+        println!("The graph will be generated with option 2, nodes = {} and edges = {}", args.nodes, args.edges);
+        let graph = Graph::new_erdos_renyi_var2(args.nodes,args.edges);
+        graph.write_dot(&args.dot)?;
+    }
 
-    println!("Graph gespeichert als 'graph.dot' ");
+    Graph::dot_to_svg(&args.dot,&args.svg)?;
+
+    println!("Graph saved as '{}' and '{}'",&args.dot,&args.svg);
     Ok(())
 }
