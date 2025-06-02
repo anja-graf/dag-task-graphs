@@ -1,0 +1,34 @@
+{
+     // Use IntelliSense to learn about possible attributes.
+     // Hover to view descriptions of existing attributes.
+     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+     "version": "0.2.0",
+     "configurations": [
+          
+          {
+               "name": "Tgff debug",
+               "type": "cppdbg",
+               "request": "launch",
+               "program": "${workspaceFolder}/tgff-3.5/tgff",
+               "args": ["paperFigure2"],
+               "stopAtEntry": false,
+               "cwd": "${workspaceFolder}/tgff-3.5",
+               "environment": [],
+               "externalConsole": false,
+               "MIMode": "gdb",
+               "setupCommands": [
+                   {
+                       "description": "Automatische Strukturierung und Einrückung für gdb aktivieren",
+                       "text": "-enable-pretty-printing",
+                       "ignoreFailures": true
+                   },
+                   {
+                       "description": "Disassemblierungsvariante auf Intel festlegen",
+                       "text": "-gdb-set disassembly-flavor intel",
+                       "ignoreFailures": true
+                   }
+               ]
+          }
+
+     ]
+}

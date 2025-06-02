@@ -1,0 +1,8 @@
+seed 4
+tg_cnt 1
+task_degree 2 2
+task_cnt 10 2
+period_mul 1
+tg_write
+eps_write
+vcg_write
