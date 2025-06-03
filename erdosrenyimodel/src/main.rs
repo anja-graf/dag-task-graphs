@@ -4,6 +4,8 @@ use std::io::{Result, Write};
 use std::process::Command;
 use std::io;
 use clap::Parser;
+use std::collections::HashMap;
+use std::collections::HashSet;
 
 struct Graph {
     //nodes: i32,
@@ -34,6 +36,8 @@ impl Graph {
         assert!(m <= n*(n-1)/2,"The number of edges is higher than possible!"); //Kantenanzahl Vollständiger Graph, siehe: https://de.wikipedia.org/wiki/Vollst%C3%A4ndiger_Graph
         let mut edges = Vec::new();
         let mut rng = rand::thread_rng();
+        // In this adjacency list we store a list of reachable nodes from a key node
+        let mut adj: HashMap<i32, Vec<i32>> = HashMap::new();
 
         let mut counter = 0;
         while counter < m {
@@ -41,13 +45,38 @@ impl Graph {
             let j = rng.gen_range(0..n);
             //println!("{:?}",edges);
             if i != j && !(edges.contains(&(i,j)) || edges.contains(&(j,i)))  {
-                edges.push((i, j));
-                counter += 1;
+                // Cycles would lead to non executable task arrangement
+                // That is why we don't want to add edges that would close up a cycle
+                // There should not be a path from j to i if we add the edge i to j
+                if !Graph::has_path(&adj, j, i, &mut HashSet::new()) {
+                    edges.push((i, j));
+                    adj.entry(i).or_default().push(j);
+                    // println!("{:?}",adj);
+                    counter += 1;
+                }
             } 
         }
         
         //Graph { nodes: n, edges }
         Graph {edges }
+    }
+
+    fn has_path (adj: &HashMap<i32, Vec<i32>>, source: i32, target: i32, visited: &mut HashSet<i32>) -> bool {
+        if source == target { // Source is target so we have a (trivial) path
+            return true;
+        }
+        if visited.contains(&source) { // We already visited our source which would lead to a cycle
+            return false;
+        }
+        visited.insert(source); // Add current source node, so we won't check it again
+        if let Some(neighbors) = adj.get(&source) {
+            for &next in neighbors { // Check for each neighbor if we can reach target node
+                if Graph::has_path(adj, next, target, visited) {
+                    return true;
+                }
+            }
+        }
+        false // There is no path between source and target
     }
 
     fn write_dot(&self, filename: &str) -> Result<()> {
