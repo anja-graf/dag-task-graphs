@@ -17,11 +17,20 @@ impl Graph {
         assert!(0.0 <= p && p <= 1.0, "The probability has to be between 0 and 1!");
         let mut edges = Vec::new();
         let mut rng = rand::thread_rng();
+        // In this adjacency list we store a list of reachable nodes from a key node
+        let mut adj: HashMap<i32, Vec<i32>> = HashMap::new();
+
 
         for i in 0..n {
-            for j in (i + 1)..n {
-                if rng.r#gen::<f64>() < p {
+            for j in 0..n {
+                // Here we add each possible edge with probability p
+
+                // Cycles would lead to non executable task arrangement
+                // That is why we don't want to add edges that would close up a cycle
+                // There should not be a path from j to i if we add the edge i to j
+                if rng.r#gen::<f64>() < p && !Graph::has_path(&adj, j, i, &mut HashSet::new()) {
                     edges.push((i, j));
+                    adj.entry(i).or_default().push(j);
                 }
             }
         }
