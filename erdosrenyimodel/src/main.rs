@@ -29,6 +29,8 @@ impl Graph {
     }
 
     fn new_erdos_renyi_var2(n: i32, m: i32) -> Self {
+        // In directed graphes we can have twice the amount of edges in comparison to undirected graphes,
+        // BUT as soon as we have more than an undirected complete graph there has to be a cycle
         assert!(m <= n*(n-1)/2,"The number of edges is higher than possible!"); //Kantenanzahl Vollständiger Graph, siehe: https://de.wikipedia.org/wiki/Vollst%C3%A4ndiger_Graph
         let mut edges = Vec::new();
         let mut rng = rand::thread_rng();
@@ -38,24 +40,11 @@ impl Graph {
             let i = rng.gen_range(0..n);
             let j = rng.gen_range(0..n);
             //println!("{:?}",edges);
-            if i != j && !(edges.contains(&(i,j)) || edges.contains(&(j,i))) {
+            if i != j && !(edges.contains(&(i,j)) || edges.contains(&(j,i)))  {
                 edges.push((i, j));
                 counter += 1;
             } 
         }
-        
-        // Alternative Generierung:
-        // let mut possible_edges = Vec::new();
-        // for i in 0..n {
-        //     for j in (i + 1)..n {
-        //         possible_edges.push((i, j));
-        //     }
-        // }
-        // let mut rng = thread_rng();
-        // let edges = possible_edges
-        //     .choose_multiple(&mut rng, m)
-        //     .cloned()
-        //     .collect();
         
         //Graph { nodes: n, edges }
         Graph {edges }
@@ -64,10 +53,10 @@ impl Graph {
     fn write_dot(&self, filename: &str) -> Result<()> {
         let mut file = File::create(filename)?;
         //println!("Generate graph with {} nodes ",self.nodes);
-        writeln!(file, "graph {{")?;
+        writeln!(file, "digraph {{")?;
 
         for (u, v) in &self.edges {
-            writeln!(file, "    {} -- {};", u, v)?;
+            writeln!(file, "    {} -> {};", u, v)?;
         }
 
         writeln!(file, "}}")?;
