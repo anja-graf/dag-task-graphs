@@ -8,23 +8,27 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 
 struct Graph {
-    nodes: HashMap<i32,Node>,
+    nodes: Vec<Node>,
     edges: Vec<(i32, i32)>,
 }
 
 struct Node {
+    name: i32,
     arrival_time: i32,
     start_time: i32,
-    deadline: i32
+    deadline: i32,
+    computation_time: i32,
 }
 
 impl Graph {
-    fn initialize_nodes(h: &mut HashMap<i32,Node>, n:i32) {
+    fn initialize_nodes(h: &mut Vec<Node>, n:i32) {
         for node in 0..n {
-            h.insert(node, Node {
+            h.push(Node {
+                name: node,
                 start_time: 0,
                 arrival_time: 0,
-                deadline: 0,
+                deadline: 100,
+                computation_time: 100,
             });
         }
     }
@@ -32,7 +36,7 @@ impl Graph {
     fn new_erdos_renyi_var1(n: i32, p: f64) -> Self {
         assert!(0.0 <= p && p <= 1.0, "The probability has to be between 0 and 1!");
         let mut edges = Vec::new();
-        let mut nodes: HashMap<i32,Node> = HashMap::new();
+        let mut nodes: Vec<Node> = Vec::new();
         let mut rng = rand::thread_rng();
         // In this adjacency list we store a list of reachable nodes from a key node
         let mut adj: HashMap<i32, Vec<i32>> = HashMap::new();
@@ -61,7 +65,7 @@ impl Graph {
         // BUT as soon as we have more than an undirected complete graph there has to be a cycle
         assert!(m <= n*(n-1)/2,"The number of edges is higher than possible!"); //Kantenanzahl Vollständiger Graph, siehe: https://de.wikipedia.org/wiki/Vollst%C3%A4ndiger_Graph
         let mut edges = Vec::new();
-        let mut nodes: HashMap<i32,Node> = HashMap::new();
+        let mut nodes: Vec<Node> = Vec::new();
         let mut rng = rand::thread_rng();
         // In this adjacency list we store a list of reachable nodes from a key node
         let mut adj: HashMap<i32, Vec<i32>> = HashMap::new();
@@ -88,6 +92,75 @@ impl Graph {
         
         Graph { nodes, edges }
     }
+
+    // fn distribute_parameters(&mut self) {    
+
+    //     for i in 0..self.nodes.len() {    
+    //         let latest_time = self.edges
+    //             .iter()
+    //             .filter(|(_, target)| *target == self.nodes[i].name)
+    //             .map(|(source, _)| {
+    //                 let src = &self.nodes[*source as usize];
+    //                 src.start_time + src.computation_time
+    //             })
+    //             .max()
+    //             .unwrap_or(0);
+    
+    //         if latest_time > self.nodes[i].start_time {
+    //             self.nodes[i].start_time = latest_time;
+    //             self.nodes[i].deadline = latest_time + self.nodes[i].computation_time;
+    //         }
+    //     }
+    // }
+    
+    fn distribute_parameters(&mut self) {
+        let sorted = self.topological_sort();
+        for node_name in sorted {
+
+            let latest_time = self.edges
+                .iter()
+                .filter(|(_, target)| *target == node_name)
+                .map(|(source, _)| {
+                    let src = &self.nodes[*source as usize];
+                    src.start_time + src.computation_time
+                })
+                .max()
+                .unwrap_or(0);
+
+            let node = self.nodes.iter_mut().find(|n| n.name == node_name).unwrap();
+            node.start_time = latest_time;
+            node.deadline = latest_time + node.computation_time;
+        }
+    }
+    
+
+    fn topological_sort(&self) -> Vec<i32> {
+        let mut visited = HashSet::new();
+        let mut result = Vec::new();
+    
+        fn dfs(
+            node: i32,
+            visited: &mut HashSet<i32>,
+            result: &mut Vec<i32>,
+            edges: &Vec<(i32, i32)>
+        ) {
+            if !visited.insert(node) {
+                return;
+            }
+            for (_, tgt) in edges.iter().filter(|(src, _)| *src == node) {
+                dfs(*tgt, visited, result, edges);
+            }
+            result.push(node);
+        }
+    
+        for node in &self.nodes {
+            dfs(node.name, &mut visited, &mut result, &self.edges);
+        }
+    
+        result.reverse(); // Now result is in topological order
+        result
+    }
+    
 
     fn has_path (adj: &HashMap<i32, Vec<i32>>, source: i32, target: i32, visited: &mut HashSet<i32>) -> bool {
         if source == target { // Source is target so we have a (trivial) path
@@ -120,9 +193,9 @@ impl Graph {
         >")?;
 
         // Explicit definiton of all nodes
-        for (name,node) in &self.nodes {
+        for node in &self.nodes {
             writeln!(file, "\t{} [label=\"{}\",xlabel=<a<sub>{}</sub> = {} <br/> s<sub>{}</sub> = {} <br/> d<sub>{}</sub> = {}>];", 
-            name,name,name,node.arrival_time,name,node.start_time,name,node.deadline)?;
+            node.name,node.name,node.name,node.arrival_time,node.name,node.start_time,node.name,node.deadline)?;
         }
 
         for (u, v) in &self.edges {
@@ -190,11 +263,13 @@ fn main() -> Result<()> {
 
     if args.option == 1 {
         println!("The graph will be generated with option 1, nodes = {} and probability = {}", args.nodes, args.probability);
-        let graph = Graph::new_erdos_renyi_var1(args.nodes, args.probability);
+        let mut graph = Graph::new_erdos_renyi_var1(args.nodes, args.probability);
+        graph.distribute_parameters();
         graph.write_dot(&args.dot)?;
     } else if args.option == 2 {
         println!("The graph will be generated with option 2, nodes = {} and edges = {}", args.nodes, args.edges);
-        let graph = Graph::new_erdos_renyi_var2(args.nodes,args.edges);
+        let mut graph = Graph::new_erdos_renyi_var2(args.nodes,args.edges);
+        graph.distribute_parameters();
         graph.write_dot(&args.dot)?;
     }
 
