@@ -8,18 +8,36 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 
 struct Graph {
-    //nodes: i32,
+    nodes: HashMap<i32,Node>,
     edges: Vec<(i32, i32)>,
 }
 
+struct Node {
+    arrival_time: i32,
+    start_time: i32,
+    deadline: i32
+}
+
 impl Graph {
+    fn initialize_nodes(h: &mut HashMap<i32,Node>, n:i32) {
+        for node in 0..n {
+            h.insert(node, Node {
+                start_time: 0,
+                arrival_time: 0,
+                deadline: 0,
+            });
+        }
+    }
+
     fn new_erdos_renyi_var1(n: i32, p: f64) -> Self {
         assert!(0.0 <= p && p <= 1.0, "The probability has to be between 0 and 1!");
         let mut edges = Vec::new();
+        let mut nodes: HashMap<i32,Node> = HashMap::new();
         let mut rng = rand::thread_rng();
         // In this adjacency list we store a list of reachable nodes from a key node
         let mut adj: HashMap<i32, Vec<i32>> = HashMap::new();
 
+        Self::initialize_nodes( &mut nodes, n);
 
         for i in 0..n {
             for j in 0..n {
@@ -35,8 +53,7 @@ impl Graph {
             }
         }
 
-        // Graph { nodes: n, edges }
-        Graph {edges }
+        Graph { nodes, edges }
     }
 
     fn new_erdos_renyi_var2(n: i32, m: i32) -> Self {
@@ -44,9 +61,12 @@ impl Graph {
         // BUT as soon as we have more than an undirected complete graph there has to be a cycle
         assert!(m <= n*(n-1)/2,"The number of edges is higher than possible!"); //Kantenanzahl Vollständiger Graph, siehe: https://de.wikipedia.org/wiki/Vollst%C3%A4ndiger_Graph
         let mut edges = Vec::new();
+        let mut nodes: HashMap<i32,Node> = HashMap::new();
         let mut rng = rand::thread_rng();
         // In this adjacency list we store a list of reachable nodes from a key node
         let mut adj: HashMap<i32, Vec<i32>> = HashMap::new();
+
+        Self::initialize_nodes( &mut nodes, n);
 
         let mut counter = 0;
         while counter < m {
@@ -66,8 +86,7 @@ impl Graph {
             } 
         }
         
-        //Graph { nodes: n, edges }
-        Graph {edges }
+        Graph { nodes, edges }
     }
 
     fn has_path (adj: &HashMap<i32, Vec<i32>>, source: i32, target: i32, visited: &mut HashSet<i32>) -> bool {
@@ -88,13 +107,26 @@ impl Graph {
         false // There is no path between source and target
     }
 
+    // https://graphviz.org/doc/info/lang.html
     fn write_dot(&self, filename: &str) -> Result<()> {
         let mut file = File::create(filename)?;
         //println!("Generate graph with {} nodes ",self.nodes);
         writeln!(file, "digraph {{")?;
+        // Description of labels
+        writeln!(file, "label = <<br/>
+        Arrival time a<sub>i</sub> <br/>
+        Start time s<sub>i</sub><br/>
+        Absolute Deadline d<sub>i</sub>
+        >")?;
+
+        // Explicit definiton of all nodes
+        for (name,node) in &self.nodes {
+            writeln!(file, "\t{} [label=\"{}\",xlabel=<a<sub>{}</sub> = {} <br/> s<sub>{}</sub> = {} <br/> d<sub>{}</sub> = {}>];", 
+            name,name,name,node.arrival_time,name,node.start_time,name,node.deadline)?;
+        }
 
         for (u, v) in &self.edges {
-            writeln!(file, "    {} -> {};", u, v)?;
+            writeln!(file, "\t{} -> {};", u, v)?;
         }
 
         writeln!(file, "}}")?;
