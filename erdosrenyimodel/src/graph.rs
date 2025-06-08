@@ -110,7 +110,7 @@ impl Graph {
                     src.start_time + src.computation_time // Time the task is finished
                 })
                 .max() // After the latest task we can start our current one
-                .unwrap_or(0); // If there is no previous task we can start immediately 
+                .unwrap_or(0); // If there is no previous task we can start immediately
 
             // Find current node in nodes list
             let node = self.nodes

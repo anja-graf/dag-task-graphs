@@ -2,7 +2,7 @@ use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[command(
-    name = "erdosrenyimodel", 
+    name = "erdosrenyimodel",
     about = "
 The erdosrenyimodel tool generates a random task graph using one of two variants of the Erdős–Rényi model:
     G(n, p) – a graph with n nodes where each edge is included with independent probability p.
@@ -12,21 +12,20 @@ For more information on the Erdős–Rényi model, see also https://en.wikipedia
 
 /// Helper class for parsing program arguments
 pub struct Args {
-    #[arg(short, long, help="Number of nodes")]
+    #[arg(short, long, help = "Number of nodes")]
     pub nodes: i32,
-    #[arg(short, long, default_value="2", help="Number of edges")]
-
+    #[arg(short, long, default_value = "2", help = "Number of edges")]
     pub edges: i32,
 
-    #[arg(short, long, default_value="0.5", help="Probability for edges")]
+    #[arg(short, long, default_value = "0.5", help = "Probability for edges")]
     pub probability: f64,
 
-    #[arg(short, long, default_value = "graph.dot", help="Path for output file in dot format")]
+    #[arg(short, long, default_value = "graph.dot", help = "Path for output file in dot format")]
     pub dot: String,
 
-    #[arg(short, long, default_value = "graph.svg", help="Path for output file in svg format")]
+    #[arg(short, long, default_value = "graph.svg", help = "Path for output file in svg format")]
     pub svg: String,
 
-    #[arg(short, long, default_value = "1",help="Variant selector 1 for G(n,p) or 2 for G(n,m)")]
+    #[arg(short, long, default_value = "1", help = "Variant selector 1 for G(n,p) or 2 for G(n,m)")]
     pub option: i32,
 }
