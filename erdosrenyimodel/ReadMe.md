@@ -23,3 +23,5 @@ Options:
   -o, --option <OPTION>            Variant selector 1 for G(n,p) or 2 for G(n,m) [default: 1]
   -h, --help                       Print help
 ```
+
+Zuletzt kann man eine Html Dokumentation für das Projekt mit `cargo doc --open` generieren und unter dem Link öffnen.
