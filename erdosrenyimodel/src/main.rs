@@ -19,7 +19,7 @@ fn main() -> Result<()> {
     let args = Args::parse();
     assert!(args.nodes > 1, "There should be more than one node!");
     assert!(!(args.option == 1 && args.option == 2), "There is only option 1 or 2");
-    assert!(args.dot != args.svg, "The path names should not be both the same");
+    assert!((args.dot != args.svg) && (args.dot != args.png) && (args.svg != args.png), "The path names should not be the same");
 
     // Depending on the specified option a function is used to generate the graph
     let mut graph;
@@ -46,7 +46,7 @@ fn main() -> Result<()> {
 
     // Save resulting graph in dot file and svg file
     graph.write_dot(&args.dot)?;
-    Graph::dot_to_svg(&args.dot, &args.svg)?;
-    println!("Graph saved as '{}' and '{}'", &args.dot, &args.svg);
+    Graph::dot_to_svg_png(&args.dot, &args.svg, &args.png)?;
+    println!("Graph saved as '{}', '{}' and '{}'", &args.dot, &args.svg, &args.png);
     Ok(())
 }

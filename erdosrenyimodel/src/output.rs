@@ -50,9 +50,10 @@ impl Graph {
         Ok(())
     }
 
-    /// Generates a comment to convert a dot file into svg with graphviz
-    /// e.g. dot -Tsvg graph.dot -o graph.svg
-    pub fn dot_to_svg(input_dot_path: &str, output_svg_path: &str) -> io::Result<()> {
+    /// Generates a comment to convert a dot file into svg and png with graphviz
+    /// e.g. dot -Tsvg graph.dot -o graph.svg 
+    /// or dot -Tpng graph.dot -o graph.png
+    pub fn dot_to_svg_png(input_dot_path: &str, output_svg_path: &str, output_png_path: &str) -> io::Result<()> {
         // Check if graphviz is installed
         let mut is_installed = false;
         if let Ok(output) = Command::new("which").arg("dot").output() {
@@ -61,7 +62,7 @@ impl Graph {
         if !is_installed {
             panic!("Could not generate svg file, because graphviz does not seem to be installed! See the ReadMe or https://graphviz.org/ for installation instructions");
         }
-        
+        // Generate svg
         let status = Command::new("dot")
             .arg("-Tsvg")
             .arg(input_dot_path)
@@ -73,6 +74,20 @@ impl Graph {
             println!("SVG successfully created '{}'", output_svg_path);
         } else {
             panic!("Error while converting dot to svg");
+        }
+        
+        // Generate png
+        let status = Command::new("dot")
+        .arg("-Tpng")
+        .arg(input_dot_path)
+        .arg("-o")
+        .arg(output_png_path)
+        .status()?;
+
+        if status.success() {
+            println!("Png successfully created '{}'", output_png_path);
+        } else {
+            panic!("Error while converting dot to png");
         }
 
         Ok(())

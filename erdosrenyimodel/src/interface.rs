@@ -26,6 +26,9 @@ pub struct Args {
     #[arg(short, long, default_value = "graph.svg", help = "Path for output file in svg format")]
     pub svg: String,
 
+    #[arg(long, default_value = "graph.png", help = "Path for output file in png format")]
+    pub png: String,
+
     #[arg(short, long, default_value = "1", help = "Variant selector 1 for G(n,p) or 2 for G(n,m)")]
     pub option: i32,
 }
