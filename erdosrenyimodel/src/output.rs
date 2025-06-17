@@ -50,6 +50,23 @@ impl Graph {
         Ok(())
     }
 
+    /// Generates an output file including all parameters of the nodes in the graph
+    pub fn write_parameters(&self, path: &str) -> Result<()> {
+        let mut file = File::create(path)?;
+        // Column description
+        writeln!(file, "Task\tStart time\tAbsolute deadline\tComputation time")?;
+        // Row for each node
+        for node in &self.nodes {
+            writeln!(
+                file,
+                "{}\t{}\t{}\t{}",
+                node.name, node.start_time, node.deadline, node.computation_time
+            )?;
+        }
+        println!("Parameter file successfully created '{}'", path);
+        Ok(())
+    }
+
     /// Generates a comment to convert a dot file into svg and png with graphviz
     /// e.g. dot -Tsvg graph.dot -o graph.svg 
     /// or dot -Tpng graph.dot -o graph.png

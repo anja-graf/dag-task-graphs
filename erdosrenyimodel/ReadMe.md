@@ -23,6 +23,7 @@ Options:
   -d, --dot <DOT>                  Path for output file in dot format [default: graph.dot]
   -s, --svg <SVG>                  Path for output file in svg format [default: graph.svg]
       --png <PNG>                  Path for output file in png format [default: graph.png]
+  -c, --csv <CSV>                  Path for parameter output file in csv format [default: No path, not generated]
   -o, --option <OPTION>            Variant selector 1 for G(n,p) or 2 for G(n,m) [default: 1]
   -h, --help                       Print help
 ```

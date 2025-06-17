@@ -44,8 +44,12 @@ fn main() -> Result<()> {
     // Generating task parameters like start time or deadline
     graph.distribute_parameters();
 
-    // Save resulting graph in dot file and svg file
+    // Save resulting graph in dot file, svg file and png file and save parameters of all tasks if wanted
     graph.write_dot(&args.dot)?;
+    if let Some(path) = &args.csv {
+        assert!((path != &args.dot) && (path != &args.svg) && (path != &args.png), "The path names should not be the same");
+        graph.write_parameters(path)?; 
+    }
     Graph::dot_to_svg_png(&args.dot, &args.svg, &args.png)?;
     println!("Graph saved as '{}', '{}' and '{}'", &args.dot, &args.svg, &args.png);
     Ok(())

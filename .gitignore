@@ -9,3 +9,4 @@ Cargo.lock
 *.dot
 *.svg
 *.png
+*.csv
