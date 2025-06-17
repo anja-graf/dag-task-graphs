@@ -10,10 +10,10 @@ pub struct Graph {
 }
 
 pub struct Node {
-    // Name identifies each node
+    // Name identifies each node and defines priority
     pub name: i32,
     // Time at which task becomes ready for execution and could possibly be executed
-    pub arrival_time: i32,
+    //pub arrival_time: i32,
     // Time at which task starts execution
     pub start_time: i32,
     // Latest acceptable completion time for a task
@@ -26,13 +26,14 @@ impl Graph {
     /// Adds n new nodes to the given vector and sets for each node a number as name and
     /// default values for start_time, arrival_time, deadline, computation_time
     fn initialize_nodes(nodes: &mut Vec<Node>, n: i32) {
+        let mut rng = rand::thread_rng();
         for node in 0..n {
             nodes.push(Node {
                 name: node,
                 start_time: 0,
-                arrival_time: 0,
+                //arrival_time: 0,
                 deadline: 100,
-                computation_time: 100,
+                computation_time: rng.gen_range(10..=100),
             });
         }
     }

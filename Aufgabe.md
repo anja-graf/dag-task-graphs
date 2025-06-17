@@ -6,11 +6,11 @@ Aktuell:
 -> Reihenfolge shuffeln bei dem for loop beide vektoren in der geschachtelten schleife
 \
 -> Laufzeit zweitrangig
-- [ ] Random 10-100 computation time
+- [x] Random 10-100 computation time
 - [ ] Zusatzoption output in extra file für alle task optionen text datei
 - [x] Read me -> graphviz installieren
 - [ ] Legende subscript letters darstellungsfehler
-- [ ] Computation time mit angeben 
+- [x] Computation time mit angeben 
 - [ ] Uniprocessor -> parallele ausführung der tasks, mit priorität, liste mit schon ausgeführten knoten
 - [ ] Ohne datei dot datei -> directory os error beim generieren der svg datei
 

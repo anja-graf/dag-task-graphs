@@ -15,19 +15,27 @@ impl Graph {
         writeln!(
             file,
             "label = <<br/>
-                         Arrival time a<sub>i</sub> <br/>
-                         Start time s<sub>i</sub><br/>
-                         Absolute Deadline d<sub>i</sub>>"
+                        <b>Task Parameter</b> <br/>
+                        Computation time C<sub>i</sub> <br/>
+                        Arrival/Release time a<sub>i</sub> is set here to 0 for all i <br/>
+                        Absolute Deadline d<sub>i</sub> <br/>
+                        Relative Deadline D<sub>i</sub> = d<sub>i</sub> - a<sub>i</sub> = d<sub>i</sub> <br/>
+                        Start time s<sub>i</sub> <br/>
+                        Finish time f<sub>i</sub> is set here to d<sub>i</sub> <br/>
+                        Response time R<sub>i</sub> = f<sub>i</sub> - a<sub>i</sub> = f<sub>i</sub><br/> 
+                        Lateness L<sub>i</sub> = f<sub>i</sub> - d<sub>i</sub> = 0 <br/>
+                        Priority of task is defined by its number <br/>
+                        >"
         )?;
 
         // Explicit definiton of all nodes for labeling each
         for node in &self.nodes {
             writeln!(
                 file,
-                "\t{} [label=\"{0}\",xlabel=<a<sub>{0}</sub> = {} <br/> s<sub>{0}</sub> = {} <br/> d<sub>{0}</sub> = {}>];",
+                "\t{} [label=\"{0}\",xlabel=<s<sub>{0}</sub> = {} <br/> C<sub>{0}</sub> = {} <br/> d<sub>{0}</sub> = {}>];",
                 node.name,
-                node.arrival_time,
                 node.start_time,
+                node.computation_time,
                 node.deadline
             )?;
         }
