@@ -16,7 +16,7 @@ Usage: erdosrenyimodel [OPTIONS] --nodes <NODES>
 
 Options:
   -n, --nodes <NODES>              Number of nodes
-  -e, --edges <EDGES>              Number of edges [default: 2]
+  -m, --edges <EDGES>              Number of edges [default: 2]
   -p, --probability <PROBABILITY>  Probability for edges [default: 0.5]
   -d, --dot <DOT>                  Path for output file in dot format [default: graph.dot]
   -s, --svg <SVG>                  Path for output file in svg format [default: graph.svg]

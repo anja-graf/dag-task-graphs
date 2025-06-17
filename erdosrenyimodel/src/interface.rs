@@ -14,7 +14,7 @@ For more information on the Erdős–Rényi model, see also https://en.wikipedia
 pub struct Args {
     #[arg(short, long, help = "Number of nodes")]
     pub nodes: i32,
-    #[arg(short, long, default_value = "2", help = "Number of edges")]
+    #[arg(short='m', long, default_value = "2", help = "Number of edges")]
     pub edges: i32,
 
     #[arg(short, long, default_value = "0.5", help = "Probability for edges")]
