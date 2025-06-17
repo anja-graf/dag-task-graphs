@@ -1,14 +1,14 @@
 # Aufgabe
 
 Aktuell: 
-- [ ] Edges e statt g(n,m) im Read Me -> Konstistenz
+- [x] Edges e statt g(n,m) im Read Me -> Konstistenz
 - [ ] Bei p = 1 ist bei option 2 kein i -> j mit i > j, bzw. auch bei anderen p Bevorzugung \
 -> Reihenfolge shuffeln bei dem for loop beide vektoren in der geschachtelten schleife
 \
 -> Laufzeit zweitrangig
 - [ ] Random 10-100 computation time
 - [ ] Zusatzoption output in extra file für alle task optionen text datei
-- [ ] Read me -> graphviz installieren
+- [x] Read me -> graphviz installieren
 - [ ] Legende subscript letters darstellungsfehler
 - [ ] Computation time mit angeben 
 - [ ] Uniprocessor -> parallele ausführung der tasks, mit priorität, liste mit schon ausgeführten knoten

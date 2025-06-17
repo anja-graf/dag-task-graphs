@@ -4,6 +4,8 @@ Mit diesem Programm lassen sich verschiedene Graphen generieren. Dafür kann mit
 Alternativ kann auch mit `cargo build --release` ein Binary erstellt werden und dann mit
 `./target/release/erdosrenyimodel [ARGS]` aufgerufen werden.
 
+Zum Generieren der svg Outputdatei wird [graphviz](https://graphviz.org/) verwendet und sollte daher zuvor installiert werden (getestet mit graphviz Version 12.2.1 und Version 13.0.0). 
+
 Es stehen verschiedene Optionen für [ARGS] zur Verfügung:
 
 ```
