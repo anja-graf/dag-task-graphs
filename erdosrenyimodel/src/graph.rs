@@ -1,6 +1,7 @@
 use rand::Rng;
 use std::collections::HashMap;
 use std::collections::HashSet;
+use rand::seq::SliceRandom;
 
 pub struct Graph {
     // List of all nodes in graph
@@ -49,16 +50,23 @@ impl Graph {
 
         Self::initialize_nodes(&mut nodes, n);
 
-        for i in 0..n {
-            for j in 0..n {
+        let mut vec1: Vec<i32> = (0..n).collect();
+        let mut vec2: Vec<i32> = (0..n).collect();
+        vec1.shuffle(&mut rng);
+        vec2.shuffle(&mut rng);
+
+        for i in &vec1 {
+            for j in &vec2 {
                 // Here we add each possible edge with probability p
 
                 // Cycles would lead to non executable task arrangement
                 // That is why we don't want to add edges that would close up a cycle
                 // There should not be a path from j to i if we add the edge i to j
-                if rng.r#gen::<f64>() < p && !Graph::has_path(&adj, j, i, &mut HashSet::new()) {
-                    edges.push((i, j));
-                    adj.entry(i).or_default().push(j);
+                if *i != *j && !(edges.contains(&(*i, *j)) || edges.contains(&(*j, *i))) {
+                    if rng.r#gen::<f64>() < p && !Graph::has_path(&adj, *j, *i, &mut HashSet::new()) {
+                        edges.push((*i, *j));
+                        adj.entry(*i).or_default().push(*j);
+                    }
                 }
             }
         }
