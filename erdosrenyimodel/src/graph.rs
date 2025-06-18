@@ -134,12 +134,16 @@ impl Graph {
     //     }
     // }
 
+    /// Brings all tasks in feasible, sequential order and sets its parameters 
+    /// If multiple tasks can be executed at one point, 
+    /// the one with higher priority (number attribute) is taken.
     pub fn distribute_parameters_single_core(&mut self) -> Vec<i32> {
         let schedule = self.schedule_tasks();
-        
+        // find first executed task and set its deadline 
         let first = self.find_node_by_name(schedule[0]);
         first.deadline = first.start_time + first.computation_time;
 
+        // the deadline will be the start time of the next node in the schedule
         let mut pre_time = first.deadline;
 
         for i in 1..schedule.len() { 
@@ -152,6 +156,7 @@ impl Graph {
         schedule
     }
 
+    /// Gets a mutable node object by its number 
     fn find_node_by_name(&mut self,name:i32) -> &mut Node {
         self.nodes
             .iter_mut()
@@ -159,8 +164,13 @@ impl Graph {
             .unwrap()
     }
 
+    /// Finds a successively task arrangement, that does not allow parallel computation of tasks
+    /// and returns an ordered list of the node numbers. If multiple tasks can be executed at one 
+    /// point, the one with higher priority (number attribute) is taken.
     fn schedule_tasks(&self) -> Vec<i32> {
+        // list of tasks in planned final order
         let mut schedule:Vec<i32> = Vec::new();
+        // list of tasks that have no predecessor or all predecessor have been executed already
         let mut ready:HashSet<i32> = HashSet::new();
         // In this predecessor list we store all previous tasks that have to be executed before a key node
         let mut pre: HashMap<i32, HashSet<i32>> = HashMap::new();
@@ -170,50 +180,50 @@ impl Graph {
         //     println!("{:?}",key);
         // }
 
-        // Adding initial nodes to ready list 
+        // Adding initial nodes to ready list
+        // that affects tasks that have no previous tasks
         for (node, previous_keys) in &pre {
             if previous_keys.is_empty() {
                 ready.insert(*node);
             }
         }
-        //println!("{:?}",ready);
 
-        if ready.is_empty() {
+        if ready.is_empty() { // This should never happen as we ensured there are no cycles
             panic!("This task arrangement is not feasible! No node has no predecessor!");
         }
 
         while !ready.is_empty() {
-            let highest_priority = ready.iter().min().cloned().unwrap();
+            let highest_priority = ready.iter().min().cloned().unwrap(); // highest priority has minimum number
+            
+            // this task will now be included in schedule
             ready.remove(&highest_priority);
-            //println!("{:?}",schedule);
             pre.remove(&highest_priority);
             schedule.push(highest_priority);
-            //println!("{:?}",schedule);
 
+            // create a copy of predecessor list and adapt it to updated schedule
             let mut new_pre: HashMap<i32, HashSet<i32>> = HashMap::new();
             for (node, predecessor) in &pre {
                 let mut value = predecessor.clone();
                 value.remove(&highest_priority);
-                if value.len() == 0 {
+                if value.len() == 0 { // this task can now also be executed, it has no more previous tasks it has to wait for
                     ready.insert(*node);
                 }
-                
                 new_pre.insert(*node, value);
             }
             pre = new_pre;
         }
         //println!("Schedule: {:?}",schedule);
-
-        return schedule;
+        schedule
     }
 
-    pub fn get_predecessor(&self,pre:&mut HashMap<i32,HashSet<i32>>) {
-        // Initialisiere leere Mengen für alle Knoten
+    /// Writes for every node (key) a list of predecessor nodes (value) in given pre hash map
+    fn get_predecessor(&self,pre:&mut HashMap<i32,HashSet<i32>>) {
+        // initialise empty entry for all nodes
         for node in &self.nodes {
             pre.insert(node.name, HashSet::new());
         }
 
-        // Füge jeden Startknoten als Vorgänger seines Zielknotens hinzu
+        // add all predecessor for every node
         for &(from, to) in &self.edges {
             pre.entry(to).or_default().insert(from);
         }
