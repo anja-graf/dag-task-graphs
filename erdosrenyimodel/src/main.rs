@@ -40,12 +40,11 @@ fn main() -> Result<()> {
     } else {
         panic!("Error: Invalid option!");
     }
-
     // Generating task parameters like start time or deadline
-    graph.distribute_parameters();
+    let schedule = graph.distribute_parameters_single_core();
 
     // Save resulting graph in dot file, svg file and png file and save parameters of all tasks if wanted
-    graph.write_dot(&args.dot)?;
+    graph.write_dot(&args.dot, schedule)?;
     if let Some(path) = &args.csv {
         assert!((path != &args.dot) && (path != &args.svg) && (path != &args.png), "The path names should not be the same");
         graph.write_parameters(path)?; 
