@@ -104,7 +104,7 @@ impl Graph {
                 }
             }
         }
-
+        assert!(m == edges.len() as i32);
         Graph { nodes, edges }
     }
 
@@ -288,5 +288,24 @@ impl Graph {
             }
         }
         false // There is no path between source and target
+    }
+
+    /// UuniFast algorithm like described in IEEE paper https://ieeexplore.ieee.org/abstract/document/1311021
+    /// Page 6, upper right before '4. Simulation results'
+    /// To efficiently generate task sets with uniform distribution and with O(n) complexity
+    pub fn uunifast(&self,u:f64) -> Vec<f64> {
+        assert!(u <= 1.0 && u >= 0.0,"The processor utilization should be percentage between 0 and 1");
+        let mut sum_u = u;
+        let mut rng = rand::thread_rng();
+        let mut vect_u:Vec<f64> = Vec::new();
+        for i in 0..self.nodes.len() - 1 {
+            let next_sum_u = sum_u * rng.r#gen::<f64>().powf(1.0/(self.nodes.len() - i) as f64);
+            vect_u.push(sum_u - next_sum_u);
+            sum_u = next_sum_u;
+        }
+        vect_u.push(sum_u); 
+        println!("{:?}",vect_u);
+        assert!(u - vect_u.iter().sum::<f64>().abs() < 1e-6); // floating point arithmetic
+        vect_u
     }
 }
