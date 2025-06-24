@@ -32,6 +32,9 @@ pub struct Args {
     #[arg(short, long, help = "Path for parameter output file in csv format [default: No path, not generated]")]
     pub csv: Option<String>,
 
+    #[arg(short, long, help = "Total processor utilization [default: Not used]")]
+    pub uunifast: Option<f64>,
+
     #[arg(short, long, default_value = "1", help = "Variant selector 1 for G(n,p) or 2 for G(n,m)")]
     pub option: i32,
 }
