@@ -21,7 +21,7 @@ impl Graph {
                         Absolute Deadline d<sub>i</sub> is set here to s<sub>i</sub> + C<sub>i</sub> <br/>
                         Relative Deadline D<sub>i</sub> = d<sub>i</sub> - a<sub>i</sub> = d<sub>i</sub> <br/>
                         Start time s<sub>i</sub> <br/>
-                        Finish time f<sub>i</sub> is set here to d<sub>i</sub> <br/>
+                        Finishing time f<sub>i</sub> is set here to d<sub>i</sub> <br/>
                         Response time R<sub>i</sub> = f<sub>i</sub> - a<sub>i</sub> = f<sub>i</sub><br/> 
                         Lateness L<sub>i</sub> = f<sub>i</sub> - d<sub>i</sub> = 0 <br/>
                         Priority of task is defined by its number <br/>
@@ -37,7 +37,7 @@ impl Graph {
                 node.name,
                 node.start_time,
                 node.computation_time,
-                node.deadline
+                node.abs_deadline
             )?;
         }
 
@@ -55,13 +55,22 @@ impl Graph {
     pub fn write_parameters(&self, path: &str) -> Result<()> {
         let mut file = File::create(path)?;
         // Column description
-        writeln!(file, "Task\tStart time\tAbsolute deadline\tComputation time")?;
+        writeln!(file, "Task/Priority\tStart time\tComputation time\tAbsolute deadline\tRelative deadline\tFinishing time\tResponse time\tLateness\tArrival time\tUtilization")?;
         // Row for each node
         for node in &self.nodes {
             writeln!(
                 file,
-                "{}\t{}\t{}\t{}",
-                node.name, node.start_time, node.deadline, node.computation_time
+                "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
+                node.name, 
+                node.start_time, 
+                node.computation_time, 
+                node.abs_deadline,
+                node.rel_deadline,
+                node.finishing_time,
+                node.response_time,
+                node.lateness,
+                node.arrival_time,
+                node.computation_time as f64 /node.abs_deadline as f64
             )?;
         }
         println!("Parameter file successfully created '{}'", path);

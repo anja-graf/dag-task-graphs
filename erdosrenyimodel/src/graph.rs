@@ -14,14 +14,22 @@ pub struct Graph {
 pub struct Node {
     // Name identifies each node and defines priority
     pub name: i32,
-    // Time at which task becomes ready for execution and could possibly be executed
-    //pub arrival_time: i32,
     // Time at which task starts execution
     pub start_time: i32,
     // Latest acceptable completion time for a task
-    pub deadline: i32,
+    pub abs_deadline: i32,
     // Time required to compute a task, independently to when a task starts or ends
     pub computation_time: i32,
+    // Time at which task becomes ready for execution and could possibly be executed
+    pub arrival_time: i32,
+    // Relative Deadline = abs_deadline - arrival_time
+    pub rel_deadline: i32,
+    // Time the task execution ends
+    pub finishing_time: i32,
+    // Response Time = finishing_time - arrival_time
+    pub response_time: i32,
+    // Lateness = finishing_time - abs_deadline
+    pub lateness: i32
 }
 
 impl Graph {
@@ -33,9 +41,13 @@ impl Graph {
             nodes.push(Node {
                 name: node,
                 start_time: 0,
-                //arrival_time: 0,
-                deadline: 100,
+                abs_deadline: 100,
                 computation_time: rng.gen_range(10..=100),
+                arrival_time: 0,
+                rel_deadline: 100,
+                finishing_time: 100,
+                response_time: 100,
+                lateness: 0
             });
         }
     }
@@ -108,50 +120,26 @@ impl Graph {
         Graph { nodes, edges }
     }
 
-    /// Distributes useful values for each node like deadline and results in a feasible task graph
-    // pub fn distribute_parameters(&mut self) {
-    //     let sorted = self.topological_sort();
-    //     for node_name in sorted {
-    //         let latest_time = self.edges
-    //             .iter()
-    //             .filter(|(_, target)| *target == node_name)
-    //             .map(|(source, _)| {
-    //                 let src = &self.nodes[*source as usize];
-    //                 src.start_time + src.computation_time // Time the task is finished
-    //             })
-    //             .max() // After the latest task we can start our current one
-    //             .unwrap_or(0); // If there is no previous task we can start immediately
-
-    //         // Find current node in nodes list
-    //         let node = self.nodes
-    //             .iter_mut()
-    //             .find(|n| n.name == node_name)
-    //             .unwrap();
-
-    //         // Set start time and deadline
-    //         node.start_time = latest_time;
-    //         node.deadline = latest_time + node.computation_time;
-    //     }
-    // }
-
     /// Brings all tasks in feasible, sequential order and sets its parameters 
     /// If multiple tasks can be executed at one point, 
     /// the one with higher priority (number attribute) is taken.
-    pub fn distribute_parameters_single_core(&mut self) -> Vec<i32> {
+    pub fn distribute_parameters_uniprocessor(&mut self) -> Vec<i32> {
         let schedule = self.schedule_tasks();
-        // find first executed task and set its deadline 
-        let first = self.find_node_by_name(schedule[0]);
-        first.deadline = first.start_time + first.computation_time;
 
         // the deadline will be the start time of the next node in the schedule
-        let mut pre_time = first.deadline;
+        // the first task can begin immediately 
+        let mut pre_time = 0;
 
-        for i in 1..schedule.len() { 
+        for i in 0..schedule.len() { 
             let node = self.find_node_by_name(schedule[i]);
             // Set start time and deadline
             node.start_time = pre_time;
-            node.deadline = node.start_time + node.computation_time;
-            pre_time = node.deadline;
+            node.abs_deadline = node.start_time + node.computation_time;
+            node.rel_deadline = node.abs_deadline - node.arrival_time;
+            node.finishing_time = node.abs_deadline;
+            node.response_time = node.finishing_time - node.arrival_time;
+            node.lateness = node.finishing_time - node.abs_deadline;
+            pre_time = node.abs_deadline;
         }
         schedule
     }
@@ -229,38 +217,6 @@ impl Graph {
         }
     }
 
-    /// Sorts nodes based on dependencies and returns an ordered list
-    /// In this list a node comes always before all of its dependencies
-    // fn topological_sort(&self) -> Vec<i32> {
-    //     let mut visited = HashSet::new();
-    //     let mut result = Vec::new();
-
-    //     /// Visits every node and saves order of dependencies in result
-    //     fn dfs(
-    //         node: i32,
-    //         visited: &mut HashSet<i32>,
-    //         result: &mut Vec<i32>,
-    //         edges: &Vec<(i32, i32)>
-    //     ) {
-    //         // We only want to proceed if the node is not newly inserted
-    //         if !visited.insert(node) {
-    //             return;
-    //         }
-    //         // Then, every node that is a following node to the current node is visited
-    //         for (_, following_node) in edges.iter().filter(|(src, _)| *src == node) {
-    //             dfs(*following_node, visited, result, edges);
-    //         }
-    //         result.push(node); // All dependent nodes are before the current one
-    //     }
-
-    //     for node in &self.nodes {
-    //         dfs(node.name, &mut visited, &mut result, &self.edges);
-    //     }
-
-    //     result.reverse(); // Now the result is in topological order
-    //     result
-    // }
-
     /// Checks if there is a path from source to target and returns corresponding boolean
     /// As Input it takes an adjacency list of the graph and
     /// a visited HashSet that should be empty at the beginning
@@ -298,7 +254,7 @@ impl Graph {
         assert!(utilization.len() == self.nodes.len());
         for i in 0..self.nodes.len() {
             self.nodes[i].computation_time = 
-            (self.nodes[i].deadline as f64 * utilization[i]).round() as i32;
+            (self.nodes[i].abs_deadline as f64 * utilization[i]).round() as i32;
         }
     }
 
