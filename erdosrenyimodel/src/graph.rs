@@ -255,6 +255,13 @@ impl Graph {
         for i in 0..self.nodes.len() {
             self.nodes[i].computation_time = 
             (self.nodes[i].abs_deadline as f64 * utilization[i]).round() as i32;
+
+            if self.nodes[i].computation_time == 0 {
+                println!("[WARNING] Computation time of task {} was set to 0!", self.nodes[i].name);
+            } else if self.nodes[i].computation_time > self.nodes[i].abs_deadline + self.nodes[i].start_time {
+                println!("[ERROR] Computation time of task {} is too high to be executable before its deadline!", self.nodes[i].name);
+            }
+
         }
     }
 
@@ -272,7 +279,7 @@ impl Graph {
             sum_u = next_sum_u;
         }
         vect_u.push(sum_u); 
-        //println!("{:?}",vect_u);
+        println!("{:?}",vect_u);
         assert!(u - vect_u.iter().sum::<f64>().abs() < 1e-6); // floating point arithmetic
         vect_u
     }

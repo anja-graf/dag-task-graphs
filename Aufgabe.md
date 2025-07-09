@@ -3,7 +3,7 @@
 Aktuell:  
 - [ ] Modul drs python einbinden, min max mitgeben oder default wert
 - [ ] Evt. mit Text file für minimum maximum sequence (max=[], min=[]) => wenn len nicht = knotenanzahl abbruch
-- [ ] Warnung/Error ausgeben falls nicht möglich bei uunifast
+- [x] Warnung/Error ausgeben falls nicht möglich bei uunifast
 - [ ] [Vortrag](#presentation) vorbereiten 
 
 Zusätzlich:

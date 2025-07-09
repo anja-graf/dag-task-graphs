@@ -45,7 +45,6 @@ fn main() -> Result<()> {
 
     if let Some(u) = &args.uunifast {
         println!("Distributing total processor utilization U = {} with uunifast",u);
-        println!("[WARNING] Not implemented correctly yet");
         graph.distribute_uunifast(*u);
     }
     // Save resulting graph in dot file, svg file and png file and save parameters of all tasks if wanted
