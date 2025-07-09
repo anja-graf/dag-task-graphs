@@ -14,6 +14,7 @@ For more information on the Erdős–Rényi model, see also https://en.wikipedia
 pub struct Args {
     #[arg(short, long, help = "Number of nodes")]
     pub nodes: i32,
+
     #[arg(short='m', long, default_value = "2", help = "Number of edges")]
     pub edges: i32,
 
@@ -26,14 +27,26 @@ pub struct Args {
     #[arg(short, long, default_value = "graph.svg", help = "Path for output file in svg format")]
     pub svg: String,
 
-    #[arg(long, default_value = "graph.png", help = "Path for output file in png format")]
+    #[arg(short='P',long, default_value = "graph.png", help = "Path for output file in png format")]
     pub png: String,
 
-    #[arg(short, long, help = "Path for parameter output file in csv format [default: No path, not generated]")]
+    #[arg(short, long, help = "Path for parameter output file in csv format [default: Not generated]")]
     pub csv: Option<String>,
 
-    #[arg(short, long, help = "Total processor utilization [default: Not used]")]
-    pub uunifast: Option<f64>,
+    #[arg(short='t', long="uunifast", value_name="UTILIZATION", help = "Total processor utilization for uunifast [default: Not used]")]
+    pub uunifast_utilization: Option<f64>,
+
+    #[arg(short='T', long="drs", value_name="UTILIZATION", help = "Total processor utilization for drs [default: Not used]")]
+    pub drs_utilization: Option<f64>,
+
+    #[arg(short='U',long, value_delimiter = ',', value_name="U1,U2,...,UN", help = "Sequence with upper bounds for each node [default: Not used]")]
+    pub upper_bounds: Option<Vec<f64>>,
+
+    #[arg(short='L', value_delimiter = ',',  value_name="L1,L2,...,LN", long, help = "Sequence with lower bounds for each node [default: Not used]")]
+    pub lower_bounds: Option<Vec<f64>>,
+
+    #[arg(short='D', long,help = "Path for drs input file [default: Not used]")]
+    pub drs_path: Option<String>,
 
     #[arg(short, long, default_value = "1", help = "Variant selector 1 for G(n,p) or 2 for G(n,m)")]
     pub option: i32,

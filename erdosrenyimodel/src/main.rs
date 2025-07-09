@@ -1,6 +1,10 @@
 mod interface;
 mod graph;
 mod output;
+mod drs;
+mod uunifast;
+mod erdosrenyi;
+mod schedule;
 
 use graph::Graph;
 use interface::Args;
@@ -43,10 +47,15 @@ fn main() -> Result<()> {
     // Generating task parameters like start time or deadline
     let schedule = graph.distribute_parameters_uniprocessor();
 
-    if let Some(u) = &args.uunifast {
+    if let Some(u) = &args.uunifast_utilization {
         println!("Distributing total processor utilization U = {} with uunifast",u);
         graph.distribute_uunifast(*u);
+    } else if let Some(u) = &args.drs_utilization {
+        //TODO: read input file for drs
+        println!("Distributing total processor utilization U = {} with drs",u);
+        graph.distribute_drs(args.nodes,*u,args.lower_bounds,args.upper_bounds);
     }
+
     // Save resulting graph in dot file, svg file and png file and save parameters of all tasks if wanted
     graph.write_dot(&args.dot, schedule)?;
     if let Some(path) = &args.csv {

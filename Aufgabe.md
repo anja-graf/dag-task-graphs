@@ -1,10 +1,11 @@
 # Aufgabe
 
 Aktuell:  
-- [ ] Modul drs python einbinden, min max mitgeben oder default wert
+- [ ] [Modul drs python](https://pypi.org/project/drs/) einbinden, min max mitgeben oder default wert
 - [ ] Evt. mit Text file für minimum maximum sequence (max=[], min=[]) => wenn len nicht = knotenanzahl abbruch
 - [x] Warnung/Error ausgeben falls nicht möglich bei uunifast
 - [ ] [Vortrag](#presentation) vorbereiten 
+- [ ] falls generiert mit uunifast: legende anpassen
 
 Zusätzlich:
 - TGFF Version 3.6 anschauen
