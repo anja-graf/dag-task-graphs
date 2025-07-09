@@ -17,15 +17,20 @@ For more information on the Erdős–Rényi model, see also https://en.wikipedia
 Usage: erdosrenyimodel [OPTIONS] --nodes <NODES>
 
 Options:
-  -n, --nodes <NODES>              Number of nodes
-  -m, --edges <EDGES>              Number of edges [default: 2]
-  -p, --probability <PROBABILITY>  Probability for edges [default: 0.5]
-  -d, --dot <DOT>                  Path for output file in dot format [default: graph.dot]
-  -s, --svg <SVG>                  Path for output file in svg format [default: graph.svg]
-      --png <PNG>                  Path for output file in png format [default: graph.png]
-  -c, --csv <CSV>                  Path for parameter output file in csv format [default: No path, not generated]
-  -o, --option <OPTION>            Variant selector 1 for G(n,p) or 2 for G(n,m) [default: 1]
-  -h, --help                       Print help
+  -n, --nodes <NODES>                Number of nodes
+  -m, --edges <EDGES>                Number of edges [default: 2]
+  -p, --probability <PROBABILITY>    Probability for edges [default: 0.5]
+  -d, --dot <DOT>                    Path for output file in dot format [default: graph.dot]
+  -s, --svg <SVG>                    Path for output file in svg format [default: graph.svg]
+  -P, --png <PNG>                    Path for output file in png format [default: graph.png]
+  -c, --csv <CSV>                    Path for parameter output file in csv format [default: Not generated]
+  -t, --uunifast <UTILIZATION>       Total processor utilization for uunifast [default: Not used]
+  -T, --drs <UTILIZATION>            Total processor utilization for drs [default: Not used]
+  -U, --upper-bounds <U1,U2,...,UN>  Sequence with upper bounds for each node [default: Not used]
+  -L, --lower-bounds <L1,L2,...,LN>  Sequence with lower bounds for each node [default: Not used]
+  -D, --drs-path <DRS_PATH>          Path for drs input file [default: Not used]
+  -o, --option <OPTION>              Variant selector 1 for G(n,p) or 2 for G(n,m) [default: 1]
+  -h, --help                         Print help
 ```
 
 Zuletzt kann man eine Html Dokumentation für das Projekt mit `cargo doc --open` generieren und unter dem Link öffnen.
