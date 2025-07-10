@@ -17,8 +17,8 @@ impl Graph {
                     "[WARNING] Computation time of task {} was set to 0!",
                     self.nodes[i].name
                 );
-            } else if self.nodes[i].computation_time
-                > self.nodes[i].abs_deadline + self.nodes[i].start_time
+            } else if self.nodes[i].abs_deadline
+                < self.nodes[i].computation_time + self.nodes[i].start_time
             {
                 println!(
                     "[ERROR] Computation time of task {} is too high to be executable before its deadline!",

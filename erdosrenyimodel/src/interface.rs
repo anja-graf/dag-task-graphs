@@ -40,10 +40,10 @@ pub struct Args {
     pub drs_utilization: Option<f64>,
 
     #[arg(short='U',long, value_delimiter = ',', value_name="U1,U2,...,UN", help = "Sequence with upper bounds for each node [default: Not used]")]
-    pub upper_bounds: Option<Vec<i32>>,
+    pub upper_bounds: Option<Vec<f64>>,
 
     #[arg(short='L', value_delimiter = ',',  value_name="L1,L2,...,LN", long, help = "Sequence with lower bounds for each node [default: Not used]")]
-    pub lower_bounds: Option<Vec<i32>>,
+    pub lower_bounds: Option<Vec<f64>>,
 
     #[arg(short='D', long,help = "Path for drs input file [default: Not used]")]
     pub drs_path: Option<String>,
