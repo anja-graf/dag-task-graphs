@@ -47,6 +47,7 @@ fn main() -> Result<()> {
     // Generating task parameters like start time or deadline
     let schedule = graph.distribute_parameters_uniprocessor();
 
+    // Distribute utilization by generating utilization vector and setting computation times new
     if let Some(u) = &args.uunifast_utilization {
         println!("Distributing total processor utilization U = {} with uunifast",u);
         graph.distribute_uunifast(*u);
