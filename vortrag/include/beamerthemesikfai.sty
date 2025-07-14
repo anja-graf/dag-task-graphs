@@ -1,0 +1,42 @@
+% Encoding: UTF-8
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: beamerthemefai.sty 531 2011-02-17 10:44:28Z metzlast $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Vorlage fuer LaTeX-Beamer
+%% gemaess dem Corporate Design der Uni Augsburg
+%%
+%% Autor: Florian Kluge <kluge@informatik.uni-augsburg.de>
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Changelog:
+%%
+%% 11/02/10 (FAK) Start
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\ProvidesPackageRCS $Id: beamerthemefai.sty 531 2011-02-17 10:44:28Z metzlast $
+%% TODO: \ProvidesPackageSVN implementieren
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{include/beamerthemesikfai}
+
+\mode<presentation>
+
+\definecolor{silver}{HTML}{b3b3b3} % RGB 72/147/36
+%\definecolor{faigreen}{HTML}{489324} % RGB 179/179/179
+\definecolor{faigreen}{cmyk}{0.7,0,1,0.2}
+
+\RequirePackage{include/beamercolorthemesikfai}
+\RequirePackage{include/beamerinnerthemesikfai}
+\RequirePackage{include/beamerouterthemesikfai}
+
+\setbeamertemplate{navigation symbols}{}
+
+\mode<all>
+

@@ -12,3 +12,14 @@ Cargo.lock
 *.csv
 
 drs
+
+# for LaTeX files
+*.aux
+*.log
+*.out
+*.toc
+*.vrb
+*.snm
+*.nav
+*.synctex.gz
+vortrag kopie.tex

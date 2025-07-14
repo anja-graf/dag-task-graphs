@@ -1,0 +1,228 @@
+% Encoding: UTF-8
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: beamerouterthemefai.sty 531 2011-02-17 10:44:28Z metzlast $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Vorlage fuer LaTeX-Beamer
+%% gemaess dem Corporate Design der Uni Augsburg
+%%
+%% Autor: Florian Kluge <kluge@informatik.uni-augsburg.de>
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Changelog:
+%%
+%% 11/02/10 (FAK) Start
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\ProvidesPackageRCS $Id: beamerouterthemefai.sty 531 2011-02-17 10:44:28Z metzlast $
+%% TODO: \ProvidesPackageSVN implementieren
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{include/beamerouterthemefai}
+
+
+\mode<presentation>
+
+\defbeamertemplate*{title page}{fai theme}{
+    \vspace{-4cm}
+    \ifx\aspect\aspectft
+        \hspace{-1.4cm}
+    \else
+        \hspace{-0.8cm}
+    \fi
+    %
+    % Titel
+    \ifx\aspect\aspectft
+        \begin{beamercolorbox}[wd=16cm,ht=0.65\textheight,center]{frametitle}
+    \else
+        \begin{beamercolorbox}[wd=18cm,ht=0.65\textheight,center]{frametitle}
+    \fi
+        \ifx\aspect\aspectft
+            \begin{minipage}[b][0.8cm][t]{11.55cm}
+        \else
+            \begin{minipage}[b][0.8cm][t]{13.55cm}
+            \fi
+            \fontfamily{\sfdefault}\selectfont\insertsubtitle
+            \end{minipage}
+        \vspace{0.1cm}
+        \ifx\aspect\aspectft
+                \begin{minipage}[t][2.0cm][b]{11.5cm}
+        \else
+            \begin{minipage}[t][2.0cm][b]{13.5cm}
+        \fi
+            \Large{\fontfamily{\sfdefault}\selectfont{\flushleft\inserttitle}}
+                \vspace{0.1cm}
+            \end{minipage}
+        \vspace{0.1cm}
+    \end{beamercolorbox}
+    %
+    % Logo
+    \ifx\aspect\aspectft
+        \begin{textblock}{8}(9,-7.0) \includegraphics[width=4cm]{include/unilogo_white} \end{textblock}
+    \else
+        \begin{textblock}{10}(10.5,-6.5) \includegraphics[width=4cm]{include/unilogo_white} \end{textblock}
+    \fi
+    \begin{textblock}{10}(3.2,5)
+        \vfill
+        \begin{minipage}[b][1.5cm][b]{5cm}
+            \scriptsize{\insertinstitute}
+        \end{minipage}
+    \end{textblock}
+    %
+    % Author
+    \ifx\aspect\aspectft
+        \begin{textblock}{14}(0.0,0.5)
+    \else
+        \begin{textblock}{14}(0.5,0.5)
+    \fi
+        \fontfamily{\sfdefault}\selectfont\insertauthor
+    \end{textblock}
+    %
+    % Untertitel
+    %\ifx\aspect\aspectsn
+        %\begin{textblock}{10}(3.2,3.0)
+    %\else
+        %\begin{textblock}{10}(3.2,3.0)
+    %\fi
+        %\textit{\insertsubtitle}
+    %\end{textblock}
+    \ifx\aspect\aspectft
+        \begin{textblock}{5.5}(8,7)
+    \else
+        \begin{textblock}{5.5}(8.5,7)
+    \fi
+    \hfill\insertdate
+    \end{textblock}
+    % Siegel
+    %
+    \ifx\aspect\aspectft
+        \begin{textblock}{3}(-1.3,6.9)
+    \else
+        \begin{textblock}{3}(-1,6.9)
+    \fi
+        \begin{minipage}[c][1cm][b]{1cm}
+            \includegraphics[width=3cm,clip=true,trim=2.5cm 2.5cm 0cm 0cm]{include/siegel}
+        \end{minipage}
+    \end{textblock}
+}
+
+\defbeamertemplate*{frametitle}{fai theme}{
+    \vspace{-0.035cm}
+    \mbox{
+        \leavevmode
+        \hspace{-1.5cm}
+        \begin{beamercolorbox}[wd=16cm,ht=1cm,dp=0cm]{frametitle}
+            \hspace{1.5cm}
+            \large{\textsf{\insertframetitle}}
+            \vspace{0.3cm}
+        \end{beamercolorbox}
+        \begin{beamercolorbox}[wd=3cm,ht=1cm,dp=0cm,left]{frametitle}
+            \includegraphics[width=1.75cm]{include/unilogo_white}
+            \vspace{0.2cm}
+        \end{beamercolorbox}
+    }
+}
+
+%\defbeamertemplate*{frametitle}{fai theme}
+%{
+%\vspace{-0.035cm}
+%\mbox{
+%\leavevmode
+%\hskip-1.1cm
+%\begin{beamercolorbox}[wd=1.7cm,ht=1.35cm,dp=0cm,left]{unisiegel}
+%\hspace*{-0.47cm}
+%\vspace{-0.00cm}
+%\includegraphics[width=1.95cm]{img/siegel_gray}
+%\end{beamercolorbox}
+%\begin{beamercolorbox}[wd=7.6cm,ht=1.35cm,left,sep=0.10cm]{frametitle}
+%
+%\insertframetitle
+%
+%\end{beamercolorbox}
+%\hskip-0.16cm
+%\begin{beamercolorbox}[wd=3.52cm,ht=1.35cm,dp=0cm,center]{unilogo}
+%\vspace{+0.3cm}
+%\hspace*{-0.6cm}
+%\includegraphics[width=2.35cm]{img/unilogo}
+%\end{beamercolorbox}
+%}
+%}
+
+\defbeamertemplate*{headline}{fai theme}{}
+
+\defbeamertemplate*{footline}{fai theme}{
+        \leavevmode
+    \begin{minipage}[c][1cm][b]{1cm}
+        \includegraphics[width=1cm,clip=true,trim=2.5cm 2.5cm 0cm 0cm]{include/siegel}
+    \end{minipage}
+    \hspace{0.5cm}
+    \begin{minipage}[c][0.6cm][c]{9cm}
+        \vfill
+        \mbox{\insertshortdate}
+        \hspace{0.5cm}
+        \ifx\beamer@shortauthor\empty
+        \mbox{\insertshorttitle}
+        \else
+        \mbox{\insertshortauthor~-- \insertshorttitle}
+        \fi
+        \hfill
+    \end{minipage}
+    \hfill
+    \begin{minipage}[c][0.6cm][c]{0.5cm}
+        \vfill
+        \ifbeamer@noframenumbering\else%
+        \mbox{\insertframenumber/\inserttotalframenumber}
+        \fi
+        %\vspace{1pt}
+    \end{minipage}
+        \hspace{0.2cm}
+}
+
+\defbeamertemplate*{note page}{fai theme}{
+    \vspace{-0.035cm}
+    \mbox{
+        \leavevmode
+        \hspace{-1.5cm}
+        \ifx\aspect\aspectft
+            \begin{beamercolorbox}[wd=14.25cm,ht=0.5cm,dp=0.25cm]{frametitle}
+        \else
+            \begin{beamercolorbox}[wd=17.5cm,ht=0.5cm,dp=0.25cm]{frametitle}
+        \fi
+            \hspace{1.5cm}
+            \textsf{Notizen} \hfill Folie \insertframenumber
+            \hspace{0.5cm}
+        \end{beamercolorbox}
+    }
+
+            \fontfamily{\sfdefault}\selectfont
+    {\footnotesize
+    \insertnote
+    }
+
+}
+
+%\defbeamertemplate*{footline}{fai theme}
+%{
+%\leavevmode
+%\begin{beamercolorbox}[wd=1.65cm,ht=0.45cm,dp=0cm,center,sep=4pt]{date in
+%head/foot}
+%\insertshortdate
+%\end{beamercolorbox}
+%\hskip-0.16cm
+%\begin{beamercolorbox}[wd=10cm,ht=0.45cm,dp=0cm,left,sep=4pt]{title in head/foot}
+%\insertshortauthor~/ \insertshorttitle
+%\end{beamercolorbox}
+%\hskip-0.16cm
+%\begin{beamercolorbox}[wd=1.37cm,ht=0.45cm,dp=0cm,right,sep=4pt]{title in head/foot}
+%\insertframenumber{}
+%\end{beamercolorbox}
+%
+%}
+
+\mode<all>

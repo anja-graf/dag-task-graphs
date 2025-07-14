@@ -1,0 +1,168 @@
+% standardmäßig im 16:9 Format
+% verwende \documentclass[43]{sikslides} für 4:3
+\documentclass{include/sikslides}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+	basicstyle=\ttfamily\footnotesize,
+	keywordstyle=\color{blue},
+	commentstyle=\color{gray},
+	stringstyle=\color{red},
+	showstringspaces=false,
+	frame=single,
+	breaklines=true
+}
+
+
+\title[Forschungsmodul]{Generierung von Task Graphs}
+\subtitle{Forschungsmodul Embedded Systems}
+\author{Anja Graf}
+\date[01.08.2025]{01. August 2025}
+
+\begin{document}
+\titleframe
+
+% erneutes Bauen notwendig, um Gliederung zu aktualisieren
+\begin{frame}
+    \frametitle{Gliederung}
+    \tableofcontents
+\end{frame}
+
+\section{Zielsetzung des Forschungsmoduls}
+
+\begin{frame} {\secname }
+	\begin{columns}[c]
+	\begin{column}{0.6\textwidth}
+		\begin{itemize}
+			\item Generieren eines Taskgraphen mit randomisierter Graphstruktur
+			\begin{itemize}
+				\item Dabei: Knoten sind Tasks, Kanten sind Abhängigkeiten 
+				\item Graph ist Directed und Acyclic (DAG)
+			\end{itemize}
+			\item Command Line Interface für Benutzerschnittstelle
+			\begin{itemize}
+				\item Übergabeparamter wie Knoten- oder Kantenanzahl
+			\end{itemize}
+			\item Output in Form von generierten Dateien 
+		\end{itemize}
+	\end{column}
+	\begin{column}{0.3\textwidth}
+		\includegraphics[width=0.4\linewidth]{images/undirected/graphcircle.png}
+		\vspace*{0.1em}
+		\centering
+		\parbox{\linewidth}{ % Breite der Box (hier halbe Textbreite)
+			\raggedleft % Text rechtsbündig innerhalb der Box
+			\scriptsize % kleine Schrift
+			Ungerichteter, zyklischer Graph \\
+			Mit 3 Knoten, 3 Kanten
+		}
+		\vspace*{0.1em}
+		\includegraphics[width=0.6\linewidth]{images/directed/graph.png}
+		\vspace*{0.1em}
+		\centering
+		\parbox{\linewidth}{ % Breite der Box (hier halbe Textbreite)
+			\raggedleft % Text rechtsbündig innerhalb der Box
+			\scriptsize % kleine Schrift
+			Gerichteter, azyklischer Graph \\
+			Mit 3 Knoten, 2 Kanten
+	}
+	\end{column}
+	\end{columns}
+\end{frame}
+\section{Funktionsweise und Inhalt}
+\subsection{Erdős–Rényi model}
+\begin{frame} {\secname : \subsecname}
+	\begin{center}
+		\Large\textbf{Zwei Varianten des Modells:}
+	\end{center}
+	\begin{columns}
+		\column{0.55\textwidth} 
+		$G(n,p)$ \\
+		n = Anzahl an Knoten \\
+		p = Wahrscheinlichkeit für Kanten
+		\begin{itemize}
+			\item Iteriere über geshuffelte Knotenvektoren, um Knoten i, j für jede mögliche Kante $e=\{i,j\} $ zu erhalten ($i \ne j$)
+			\item Füge diese Kante e mit Wahrscheinlichkeit p hinzu
+		\end{itemize}
+	
+		
+		\column{0.45\textwidth}
+		$G(n,m)$ \\
+		n = Anzahl an Knoten \\
+		m = Anzahl an Kanten
+		\begin{itemize}
+			\item Wähle zwei zufällige Knoten aus
+			\item Füge Kante zwischen Knoten hinzu, falls neue Kante
+			\item Iteriere, bis Anzahl m erreicht
+		\end{itemize}
+	\end{columns}
+	\vspace*{1em}
+	Insgesamt sind beide Varianten noch ungerichtet und prüfen nicht auf Kreisfreiheit!
+\end{frame}
+\begin{frame} {\secname : \subsecname}
+	Daher:
+	\begin{itemize}
+		\item Füge gerichtete, statt ungerichtete Kanten ein
+		\item Prüfe beim Hinzufügen ob eine der beiden Kanten $(i,j)$ oder $(j,i)$ bereits existiert
+		\item Prüfe, ob es bereits Pfad $j $ nach $i$ gibt mittels rekursiven Tiefensuche
+		\item Falls ja, würde neue Kante $e=(i,j) $ Kreis schließen 
+		\begin{itemize}
+			\item Darf nicht eingefügt werden 
+		\end{itemize}
+	\end{itemize}
+	
+\end{frame}	
+\subsection{Uniprocessor distribution}
+\begin{frame} [fragile]{\secname : \subsecname}
+	\begin{lstlisting} {language=Rust, caption=dsfdfs}
+fn uunifast(&self, u: f64) -> Vec<f64> {
+	assert!(u <= 1.0 && u >= 0.0, "The processor utilization should be percentage between 0 and 1");
+	let mut sum_u = u;
+	let mut rng = rand::thread_rng();
+	let mut vect_u: Vec<f64> = Vec::new();
+	for i in 0..self.nodes.len() - 1 {
+		let next_sum_u = sum_u * rng.r#gen::<f64>().powf(1.0 / (self.nodes.len() - i) as f64);
+		vect_u.push(sum_u - next_sum_u);
+		sum_u = next_sum_u;
+	}
+	vect_u.push(sum_u);
+	println!("{:?}", vect_u);
+	assert!(u - vect_u.iter().sum::<f64>().abs() < 1e-6);
+	vect_u
+}
+	\end{lstlisting}
+	\vspace*{-0.3em}
+	\hfill % schiebt den Text nach rechts
+	\parbox{0.5\linewidth}{ % Breite der Box (hier halbe Textbreite)
+		\raggedleft % Text rechtsbündig innerhalb der Box
+		\scriptsize % kleine Schrift
+		In uunifast.rs, ab Zeile 34
+	}
+\end{frame}
+\subsection{Uunifast Algorithmus}
+\begin{frame} {\secname : \subsecname}
+	Constraints für generierte Graphen  \\
+	Gilt $\forall i \in \{0..n-1\}$, n = Anzahl der Tasks, i = Index der Task im Schedule
+	\begin{itemize}
+		\item $c_i  \in \{10..100\} $ \\
+		Die Computation time muss für alle Knoten zwischen 10 und 100 liegen.
+		\item $d_i \ge c_i + s_i $ \\
+		Die Deadline muss spät genug sein, sodass die Task vorher ausgeführt werden kann.
+		\item $s_i \ge d_{i-1}, $ wobei $s_0 = 0$ \\
+		Eine Task, welche früher gescheduled ist, muss beendet worden sein bevor die nächste startet. Zur Vereinfachung wird $s_i = d_{i-1}$ gesetzt.
+		\item $u_i =  \frac{c_i}{t_i}$ \\
+		Das Verhältnis aus Computation time und Periode muss der berechneten Utilization entsprechen. Dabei wird der Einfachheit halber $t_i = d_i$ gleichgesetzt.
+	\end{itemize}
+\end{frame}
+\subsection{Dirichlet Rescale Algorithmus}
+\begin{frame} {\secname : \subsecname}
+\end{frame}
+\section{Ergebnisse und Beispiele}
+\begin{frame} {\secname }
+	\includegraphics [width=0.2 \textwidth] {images/graph.png}
+\end{frame}
+
+\end{document}
+

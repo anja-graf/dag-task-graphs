@@ -1,0 +1,57 @@
+% Encoding: UTF-8
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: beamerinnerthemefai.sty 531 2011-02-17 10:44:28Z metzlast $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Vorlage fuer LaTeX-Beamer
+%% gemaess dem Corporate Design der Uni Augsburg
+%%
+%% Autor: Florian Kluge <kluge@informatik.uni-augsburg.de>
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Changelog:
+%%
+%% 11/02/10 (FAK) Start
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\ProvidesPackageRCS $Id: beamerinnerthemefai.sty 531 2011-02-17 10:44:28Z metzlast $
+%% TODO: \ProvidesPackageSVN implementieren
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{include/beamerinnerthemefai}
+
+
+\mode<presentation>
+
+\setbeamertemplate{title page}{
+    \begin{beamercolorbox}[sep=8pt,center,shadow=false,rounded=true,left]{title}%{title}
+      \usebeamerfont{title}\textbf{\inserttitle}\par%
+      \ifx\insertsubtitle\@empty%
+      \else%
+      \vskip0.25em%
+             {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+             \fi%
+    \end{beamercolorbox}%
+    \vskip1em\par
+    \begin{beamercolorbox}[sep=8pt,center,shadow=false,left]{author}
+      \usebeamerfont{author}\insertauthor
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=8pt,center,shadow=false,left]{institute}
+      \usebeamerfont{institute}\insertinstitute
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=8pt,center,shadow=false,left]{date}
+      \usebeamerfont{date}\insertdate
+    \end{beamercolorbox}
+    \vskip0.5em
+           {\usebeamercolor[fg]{titlegraphic}\inserttitlegraphic\par}
+
+}
+
+
+\mode<all>

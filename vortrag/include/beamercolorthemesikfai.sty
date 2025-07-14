@@ -1,0 +1,48 @@
+% Encoding: UTF-8
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% $Id: beamercolorthemefai.sty 531 2011-02-17 10:44:28Z metzlast $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Vorlage fuer LaTeX-Beamer
+%% gemaess dem Corporate Design der Uni Augsburg
+%%
+%% Autor: Florian Kluge <kluge@informatik.uni-augsburg.de>
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Changelog:
+%%
+%% 11/02/10 (FAK) Start
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\ProvidesPackageRCS $Id: beamercolorthemefai.sty 531 2011-02-17 10:44:28Z metzlast $
+%% TODO: \ProvidesPackageSVN implementieren
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamercolorthemefai}
+
+\mode<presentation>
+
+\setbeamercolor*{frametitle}{parent=palette primary}
+\setbeamercolor*{unisiegel}{parent=structure}
+\setbeamercolor*{unilogo}{parent=palette secondary}
+\setbeamercolor*{date in head/foot}{parent = structure}
+\setbeamercolor*{title in head/foot}{parent = palette primary}
+
+\setbeamercolor{structure}{fg=black,bg=white}
+
+%% Frametitle
+\setbeamercolor*{palette primary}{use=structure,fg=white,bg=faigreen}
+%% Talk title in foot
+\setbeamercolor*{palette secondary}{fg=white,bg=silver}
+%% Head+Author
+\setbeamercolor*{palette tertiary}{fg=white,bg=red}
+%% Page Numbering
+\setbeamercolor*{palette quaternary}{fg=white,bg=blue}
+
+\mode<all>
