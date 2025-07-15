@@ -28,6 +28,45 @@ impl Graph {
         schedule
     }
 
+    /// Distributes the given utilization among the nodes of the graph
+    /// For this the computation time of each task i is set to utilization[i] * abs_deadline 
+    /// and finishing time, response time and lateness are set accordingly.
+    /// If now the computation time is 0 or higher than 100, a warning or error is printed out
+    pub fn distribute_parameters(&mut self, utilization: &Vec<f64>) {
+        for i in 0..self.nodes.len() {
+            // This ensures utilitaion is distributed correctly
+            self.nodes[i].computation_time =
+                (self.nodes[i].abs_deadline as f64 * utilization[i]).round() as i32;
+
+            self.nodes[i].finishing_time =
+                self.nodes[i].start_time + self.nodes[i].computation_time;
+            self.nodes[i].response_time =
+                self.nodes[i].finishing_time - self.nodes[i].arrival_time;
+            self.nodes[i].lateness = self.nodes[i].finishing_time - self.nodes[i].abs_deadline;
+            
+
+            if self.nodes[i].computation_time == 0 {
+                println!(
+                    "[WARNING] Computation time of task {} was set to 0!",
+                    self.nodes[i].name
+                );
+            } else if self.nodes[i].computation_time > 100 {
+                println!(
+                    "[WARNING] Computation time of task {} was set to {}!",
+                    self.nodes[i].name,self.nodes[i].computation_time
+                );
+            } 
+            if self.nodes[i].abs_deadline
+                < self.nodes[i].computation_time + self.nodes[i].start_time
+            {
+                println!(
+                    "[ERROR] Computation time of task {} is too high to be executable before its deadline!",
+                    self.nodes[i].name
+                );
+            }
+        }
+    }
+
     /// Gets a mutable node object by its number
     fn find_node_by_name(&mut self, name: i32) -> &mut Node {
         self.nodes.iter_mut().find(|n| n.name == name).unwrap()

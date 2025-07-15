@@ -59,30 +59,7 @@ impl Graph {
         assert!(utilization.len() == self.nodes.len());
 
         // Distribute the computed utilization to the nodes
-        for i in 0..self.nodes.len() {
-            self.nodes[i].computation_time =
-                (self.nodes[i].abs_deadline as f64 * utilization[i]).round() as i32;
-
-            if self.nodes[i].computation_time == 0 {
-                println!(
-                    "[WARNING] Computation time of task {} was set to 0!",
-                    self.nodes[i].name
-                );
-            } else if self.nodes[i].computation_time > 100 {
-                println!(
-                    "[WARNING] Computation time of task {} was set to {}!",
-                    self.nodes[i].name,self.nodes[i].computation_time
-                );
-            } 
-            if self.nodes[i].abs_deadline
-                < self.nodes[i].computation_time + self.nodes[i].start_time
-            {
-                println!(
-                    "[ERROR] Computation time of task {} is too high to be executable before its deadline!",
-                    self.nodes[i].name
-                );
-            }
-        }
+        self.distribute_parameters(&utilization);
     }
 
     /// Internal helper that invokes a python script to compute the utilization distribution 

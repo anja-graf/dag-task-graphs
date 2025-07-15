@@ -8,24 +8,7 @@ impl Graph {
         // U_i = C_i / T_i and sum of all U_i must be <= 1 (else not schedulable)
         let utilization: Vec<f64> = self.uunifast(u);
         assert!(utilization.len() == self.nodes.len());
-        for i in 0..self.nodes.len() {
-            self.nodes[i].computation_time =
-                (self.nodes[i].abs_deadline as f64 * utilization[i]).round() as i32;
-
-            if self.nodes[i].computation_time == 0 {
-                println!(
-                    "[WARNING] Computation time of task {} was set to 0!",
-                    self.nodes[i].name
-                );
-            } else if self.nodes[i].abs_deadline
-                < self.nodes[i].computation_time + self.nodes[i].start_time
-            {
-                println!(
-                    "[ERROR] Computation time of task {} is too high to be executable before its deadline!",
-                    self.nodes[i].name
-                );
-            }
-        }
+        self.distribute_parameters(&utilization);
     }
 
     /// UuniFast algorithm like described in IEEE paper https://ieeexplore.ieee.org/abstract/document/1311021
