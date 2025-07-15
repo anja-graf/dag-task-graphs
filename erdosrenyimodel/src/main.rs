@@ -46,19 +46,22 @@ fn main() -> Result<()> {
     }
     // Generating task parameters like start time or deadline
     let schedule = graph.distribute_parameters_uniprocessor();
+    let mut changed_comp:bool= false;
 
     // Distribute utilization by generating utilization vector and setting computation times new
     if let Some(u) = &args.uunifast_utilization {
         println!("Distributing total processor utilization U = {} with uunifast",u);
         graph.distribute_uunifast(*u);
+        changed_comp = true;
     } else if let Some(u) = &args.drs_utilization {
         //TODO: read input file for drs
         println!("Distributing total processor utilization U = {} with drs",u);
         graph.distribute_drs(args.nodes,*u,args.lower_bounds,args.upper_bounds);
+        changed_comp = true;
     }
 
     // Save resulting graph in dot file, svg file and png file and save parameters of all tasks if wanted
-    graph.write_dot(&args.dot, schedule)?;
+    graph.write_dot(&args.dot, schedule,changed_comp)?;
     if let Some(path) = &args.csv {
         assert!((path != &args.dot) && (path != &args.svg) && (path != &args.png), "The path names should not be the same");
         graph.write_parameters(path)?; 

@@ -68,7 +68,13 @@ impl Graph {
                     "[WARNING] Computation time of task {} was set to 0!",
                     self.nodes[i].name
                 );
-            } else if self.nodes[i].abs_deadline
+            } else if self.nodes[i].computation_time > 100 {
+                println!(
+                    "[WARNING] Computation time of task {} was set to {}!",
+                    self.nodes[i].name,self.nodes[i].computation_time
+                );
+            } 
+            if self.nodes[i].abs_deadline
                 < self.nodes[i].computation_time + self.nodes[i].start_time
             {
                 println!(
