@@ -6,6 +6,8 @@ Alternativ kann auch mit `cargo build --release` ein Binary erstellt werden und 
 
 Zum Generieren der svg Outputdatei wird [graphviz](https://graphviz.org/) verwendet und sollte daher zuvor installiert werden (getestet mit graphviz Version 12.2.1 und Version 13.0.0). 
 
+Falls drs benutzt wird, sollte außerdem das [drs python Modul](https://pypi.org/project/drs/) installiert und aufrufbar sein.
+
 Es stehen verschiedene Optionen für [ARGS] zur Verfügung:
 
 ```

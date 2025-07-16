@@ -56,7 +56,13 @@ fn main() -> Result<()> {
     } else if let Some(u) = &args.drs_utilization {
         //TODO: read input file for drs
         println!("Distributing total processor utilization U = {} with drs",u);
-        graph.distribute_drs(args.nodes,*u,args.lower_bounds,args.upper_bounds);
+        let mut lower = args.lower_bounds;
+        let mut upper = args.upper_bounds;
+        // If a drs input file is given, read it 
+        if let Some(path) = &args.drs_path {
+            (lower, upper) = Graph::read_drs_input_file(path);
+        }
+        graph.distribute_drs(args.nodes,*u,lower, upper);
         changed_comp = true;
     }
 

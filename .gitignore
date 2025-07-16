@@ -12,6 +12,7 @@ Cargo.lock
 *.csv
 
 drs
+*.txt
 
 # for LaTeX files
 *.aux

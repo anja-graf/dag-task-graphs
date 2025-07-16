@@ -1,6 +1,9 @@
 use crate::graph::Graph;
 use std::process::Command;
 
+use std::fs;
+use std::collections::HashMap;
+
 impl Graph {
     /// Distributes total processor utilization among the nodes of the graph
     /// by assigning new computation times, optionally constrained by lower and upper bounds
@@ -27,9 +30,9 @@ impl Graph {
                 u <= upper.iter().sum::<f64>().abs(),
                 "[ERROR] The sum of the upper bound values should not be less than the required total utilization"
             );
-            println!("Distributing upper bounds: {:?}", upper);
             upper.clone()
         } else {
+            println!("Generating default upper bounds");
             self.nodes
                 .iter()
                 .map(|node| node.computation_time as f64 / node.rel_deadline as f64)
@@ -44,9 +47,9 @@ impl Graph {
                 u >= lower.iter().sum::<f64>().abs(),
                 "[ERROR] The sum of the lower bound values should not be greater than the required total utilization"
             );
-            println!("Distributing lower bounds: {:?}", lower);
             lower.clone()
         } else {
+            println!("Generating default lower bounds");
             vec![0.0; n as usize]
         };
 
@@ -93,13 +96,44 @@ impl Graph {
             return result_vec;
         } else {
             if String::from_utf8_lossy(&output.stderr).contains("ModuleNotFoundError") {
-                println!(
+                panic!(
                     "[ERROR] Could not distribute processor utilization, because the python module 'drs' is not installed"
                 );
             } else {
-                println!("[ERROR] {:?}", output);
+                panic!("[ERROR] {}", String::from_utf8_lossy(&output.stderr));
             }
-            return Vec::new();
         }
+    }
+
+    pub fn read_drs_input_file(path: &str) -> (Option<Vec<f64>>, Option<Vec<f64>>) {
+        println!("Reading drs input file from '{}'", path);
+
+            let content = match fs::read_to_string(path) {
+                Ok(input) => input,
+                Err(ref e) if e.kind() == std::io::ErrorKind::NotFound => {
+                panic!("[ERROR] File '{}' not found for drs input", path);
+                }
+                Err(e) => {
+                panic!("[ERROR] Could not read from filepath '{}' for drs input: {}", path, e);
+                }
+            };
+            let data: HashMap<String, Vec<f64>> = toml::from_str(&content).unwrap();
+
+            
+            let lower = match data.get("min") {
+                Some(input) => Some(input.clone()),
+                None => {
+                    println!("Could not read lower bounds: 'min = []' is missing");
+                    None
+                }
+            };
+            let upper = match data.get("max") {
+                Some(input) => Some(input.clone()),
+                None => {
+                    println!("Could not read upper bounds: 'max = []' is missing");
+                    None
+                }
+            };
+            return (lower, upper);
     }
 }
