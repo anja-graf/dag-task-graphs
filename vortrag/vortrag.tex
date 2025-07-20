@@ -1,9 +1,12 @@
 % standardmäßig im 16:9 Format
 % verwende \documentclass[43]{sikslides} für 4:3
 \documentclass{include/sikslides}
+\usepackage{algorithm2e}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{amsmath}
 
 \lstset{
 	basicstyle=\ttfamily\footnotesize,
@@ -72,7 +75,7 @@
 	\end{columns}
 \end{frame}
 \section{Funktionsweise und Inhalt}
-\subsection{Erdős–Rényi model}
+\subsection{Graphgenerierung mit Erdős–Rényi Modell}
 \begin{frame} {\secname : \subsecname}
 	\begin{center}
 		\Large\textbf{Zwei Varianten des Modells:}
@@ -114,9 +117,95 @@
 	\end{itemize}
 	
 \end{frame}	
-\subsection{Uniprocessor distribution}
+\subsection{Taskparameter}
+\begin{frame} {\secname : \subsecname}
+	\begin{center}
+	\begin{tikzpicture}
+		
+		% Achse
+		\draw[ultra thick, ->] (0,0) -- (12,0);
+		
+		% Punkte
+		\filldraw (0,0) circle (2pt) node[below] {$a_i$};
+		\filldraw (3,0) circle (2pt) node[below] {$s_i$};
+		\filldraw (6,0) circle (2pt) node[below] {$f_i$};
+		\filldraw (10,0) circle (2pt) node[below] {$d_i$};
+		
+		% Rechteck 
+		\draw[fill=gray!30] (3,0.2) rectangle (6,1);
+		\node at (4.5,0.6) {Task i};
+		
+		% Pfeile
+		\draw[->,line width=2pt] (0,0.1) -- (0,1); % senkrechter Pfeil ab ai
+		\draw[->,line width=2pt] (10,1) -- (10,0.1); % senkrechter Pfeil ab di
+		
+		\draw[<->] (0,2) -- node[above] {$D_i$} (10,2);
+		\draw[<->] (3,1.4) -- node[above] {$C_i$} (6,1.4);
+		\draw[<->] (0,-0.8) -- node[below] {$R_i$} (5.9,-0.8);
+		\draw[<->] (6,-0.8) -- node[below] {$- L_i$} (10,-0.8);
+		
+	\end{tikzpicture}
+	\begin{itemize}
+		\begin{columns}
+		\column{0.4\textwidth} 
+		%\item[] Task name  $i$
+		\item[] Computation time $C_i$
+		\item[] Arrival/Release time $a_i$
+		\item[] Absolute Deadline $d_i$
+		\item[] Relative Deadline $D_i = d_i - a_i$
+		\column{0.35\textwidth} 
+		\item[] Start time $s_i$
+		\item[] Finishing time $f_i$
+		\item[] Response time $R_i = f_i - a_i$
+		\item[] Lateness $L_i = f_i - d_i$
+		%\item[] Priority is set to name
+		\end{columns}
+	\end{itemize}
+\end{center}
+\end{frame}
+\subsection{Uniprocessor distribution und Scheduling}
 \begin{frame} [fragile]{\secname : \subsecname}
-	\begin{lstlisting} {language=Rust, caption=dsfdfs}
+	Ziel: Ausführungsreihenfolge finden
+	\begin{itemize}
+		\item Dabei sollen Abhängigkeiten berücksichtigt werden
+		\item Also falls Kante $(i,j) \in E $ für Graph $G = (V,E)$ muss Task i vor Task j ausgeführt worden sein 
+		\item Dafür generieren wir zu Beginn eine Hash Map mit Knoten als Key und jeweils alle Vorgänger als Value Liste (z.B.  $j \in$ Value Liste von Key i)
+	\end{itemize}
+\end{frame}
+\begin{frame} [fragile]{\secname : \subsecname}
+\begin{center}
+\fbox{%
+\begin{minipage}{0.9\linewidth}
+\begin{algorithm}[H]
+	\SetAlgoLined
+	\footnotesize
+	$schedule\gets []$,
+	$ready\gets $ \{\},
+	$pre\gets $ get\_predecessor\_hash\_map()\\
+	\ForAll{$key, value \in pre : value =  \emptyset$}
+	{
+		$ready.add(key)$\
+	}
+	// throw error if ready = $\emptyset$ \\
+	\While{ready $\ne \emptyset$}{
+		highest\_priority $\gets $ ready.get\_min() \\
+		ready.remove(highest\_priority) \\ 
+		pre.remove(highest\_priority) \\
+		schedule.append(highest\_priority) \\
+		\ForAll{$key, value \in pre : highest\_priority \in value $}
+		{
+			$value \gets value \setminus highest\_priority$ \\
+			\If{$value = \emptyset$}{ready.add(key)}
+		}
+	}
+	\Return{schedule}
+\end{algorithm}
+\end{minipage}}
+\end{center}
+\end{frame}
+\subsection{Utilization mit Uunifast Algorithmus}
+\begin{frame} [fragile]{\secname : \subsecname}
+	\begin{lstlisting} {language=Rust}
 fn uunifast(&self, u: f64) -> Vec<f64> {
 	assert!(u <= 1.0 && u >= 0.0, "The processor utilization should be percentage between 0 and 1");
 	let mut sum_u = u;
@@ -141,7 +230,6 @@ fn uunifast(&self, u: f64) -> Vec<f64> {
 		In uunifast.rs, ab Zeile 34
 	}
 \end{frame}
-\subsection{Uunifast Algorithmus}
 \begin{frame} {\secname : \subsecname}
 	Constraints für generierte Graphen  \\
 	Gilt $\forall i \in \{0..n-1\}$, n = Anzahl der Tasks, i = Index der Task im Schedule
@@ -156,7 +244,10 @@ fn uunifast(&self, u: f64) -> Vec<f64> {
 		Das Verhältnis aus Computation time und Periode muss der berechneten Utilization entsprechen. Dabei wird der Einfachheit halber $t_i = d_i$ gleichgesetzt.
 	\end{itemize}
 \end{frame}
-\subsection{Dirichlet Rescale Algorithmus}
+\subsection{Utilization mit Dirichlet Rescale Algorithmus}
+\begin{frame} {\secname : \subsecname}
+\end{frame}
+\subsection{Interface, Input und Output}
 \begin{frame} {\secname : \subsecname}
 \end{frame}
 \section{Ergebnisse und Beispiele}
