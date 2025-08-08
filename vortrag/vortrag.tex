@@ -7,7 +7,9 @@
 \usepackage{xcolor}
 \usepackage{tikz}
 \usepackage{amsmath}
+\usepackage{pifont}
 
+\setbeamerfont{subsubsection in toc}{size=\normalsize}
 \lstset{
 	basicstyle=\ttfamily\footnotesize,
 	keywordstyle=\color{blue},
@@ -22,7 +24,7 @@
 \title[Forschungsmodul]{Generierung von Task Graphs}
 \subtitle{Forschungsmodul Embedded Systems}
 \author{Anja Graf}
-\date[01.08.2025]{01. August 2025}
+\date[06.08.2025]{06. August 2025}
 
 \begin{document}
 \titleframe
@@ -81,6 +83,7 @@
 		\Large\textbf{Zwei Varianten des Modells:}
 	\end{center}
 	\begin{columns}
+		\onslide<2->{
 		\column{0.55\textwidth} 
 		$G(n,p)$ \\
 		n = Anzahl an Knoten \\
@@ -89,7 +92,8 @@
 			\item Iteriere über geshuffelte Knotenvektoren, um Knoten i, j für jede mögliche Kante $e=\{i,j\} $ zu erhalten ($i \ne j$)
 			\item Füge diese Kante e mit Wahrscheinlichkeit p hinzu
 		\end{itemize}
-	
+	}
+	\onslide<3->{
 		
 		\column{0.45\textwidth}
 		$G(n,m)$ \\
@@ -100,11 +104,17 @@
 			\item Füge Kante zwischen Knoten hinzu, falls neue Kante
 			\item Iteriere, bis Anzahl m erreicht
 		\end{itemize}
+}
 	\end{columns}
+
 	\vspace*{1em}
+	\onslide<4->{
 	Insgesamt sind beide Varianten noch ungerichtet und prüfen nicht auf Kreisfreiheit!
+}
 \end{frame}
 \begin{frame} {\secname : \subsecname}
+	\begin {columns}
+		\begin {column}{0.6\textwidth}
 	Daher:
 	\begin{itemize}
 		\item Füge gerichtete, statt ungerichtete Kanten ein
@@ -114,8 +124,16 @@
 		\begin{itemize}
 			\item Darf nicht eingefügt werden 
 		\end{itemize}
+		\onslide<2-> {
+		\item Graph ist nun Directed und Acyclic \ding{51}
+		}
 	\end{itemize}
-	
+	\end{column}
+	\begin {column}{0.3\textwidth}
+		\vspace*{0.25cm}
+		\includegraphics [width=\columnwidth] {images/circle.png}
+	\end {column}
+	\end{columns}
 \end{frame}	
 \subsection{Taskparameter}
 \begin{frame} {\secname : \subsecname}
@@ -158,21 +176,40 @@
 		\item[] Finishing time $f_i$
 		\item[] Response time $R_i = f_i - a_i$
 		\item[] Lateness $L_i = f_i - d_i$
+		\item[] Priority, set to $i$
 		%\item[] Priority is set to name
 		\end{columns}
 	\end{itemize}
 \end{center}
 \end{frame}
-\subsection{Uniprocessor distribution und Scheduling}
-\begin{frame} [fragile]{\secname : \subsecname}
+
+
+
+
+
+
+
+\subsection{Uniprocessor Scheduling}
+\begin{frame} {\secname : \subsecname}
 	Ziel: Ausführungsreihenfolge finden
 	\begin{itemize}
 		\item Dabei sollen Abhängigkeiten berücksichtigt werden
 		\item Also falls Kante $(i,j) \in E $ für Graph $G = (V,E)$ muss Task i vor Task j ausgeführt worden sein 
-		\item Dafür generieren wir zu Beginn eine Hash Map mit Knoten als Key und jeweils alle Vorgänger als Value Liste (z.B.  $j \in$ Value Liste von Key i)
+		\item Dafür generieren wir zu Beginn eine Hash Map
+		 \begin{itemize}
+		 	\item Keys: Knoten bzw. Task
+		 	\item Values: Jeweils eine Liste aller Vorgänger 
+		 	(z.B.  $j \in$ Value Liste von Key i)
+		 \end{itemize}
+		 \item Dann fügen wir iterativ bereitstehende Tasks mit der höchsten Priorität in den Schedule ein 
+		 \begin{itemize}
+		 	\item Task ist bereit/ready, falls voher keine abhängigen Tasks mehr ausgeführt werden müssen
+	 \end{itemize}
+		 
+		 
 	\end{itemize}
 \end{frame}
-\begin{frame} [fragile]{\secname : \subsecname}
+\begin{frame} [fragile]{\secname : Pseudocode für \subsecname}
 \begin{center}
 \fbox{%
 \begin{minipage}{0.9\linewidth}
@@ -203,8 +240,50 @@
 \end{minipage}}
 \end{center}
 \end{frame}
-\subsection{Utilization mit Uunifast Algorithmus}
-\begin{frame} [fragile]{\secname : \subsecname}
+
+\begin{frame}  {\secname : Beispiel Graphgenerierung und Parametervergabe}
+	\begin{columns}
+		\begin{column} {0.5\textwidth}
+			\begin{flushright}
+				\includegraphics [width=0.7\columnwidth] {images/ExampleGraph.png}
+			\end{flushright}
+		\end{column}
+		\begin{column}{0.65\textwidth}
+	\begin{itemize}
+		\item Beispielhafter Output des Programms bei Aufruf mit Parametern \textit{--nodes 5 --edges 6} und Auswahl des G(n,m) Erdős–Rényi Modell
+	\end{itemize}
+	\vspace*{4mm}
+			\includegraphics [width=0.9\columnwidth] {images/ExampleGraph2.png}
+	
+		\end{column}
+\end{columns}	
+\end{frame}
+
+
+\subsection{Utilization}
+\subsubsection{Uunifast Algorithmus}
+%\subsection{Utilization mit Uunifast Algorithmus}
+\begin{frame}{\secname : \subsecname}
+	\begin{itemize}
+		\item Weitere Anforderung an die Parameterverteilung: \\
+		Berücksichtigung der Auslastung von Tasks
+		\item Utilization für Task i definiert als $U_i = \frac{C_i} { T_i }$
+		\begin{itemize}
+			\item dabei $T_i$ Periode, d.h. fester Zeitabstand, in welchem die Task i wiederholt ausgeführt werden soll
+		\end{itemize}
+		\item Gesamtauslastung des Prozessors $U = \sum_{i = 1}^{n} U_i = \sum_{i = 1}^{n} \frac{C_i}{T_i}$
+		\begin{itemize}
+			\item \glqq Wie viel Prozessorzeit pro Zeiteinheit benötigen alle Tasks zusammen?\grqq
+		\item Wenn $U > 1 $: Prozessor ist überlastet und Tasks sind nicht schedulable/echtzeitfähig
+	\end{itemize}
+	\item Im Programm kann zwischen Uunifast und Drs Algorithmus gewählt werden
+	\begin{itemize}
+		\item Dafür wird Parameter $U$ mitgegeben und daraus ein Vektor $U_1,U_2, ...,U_n$ berechnet 
+		\item Die entsprechenden Werte werden für jede Task i angepasst, damit das Verhältnis mit $U_i$ übereinstimmt
+	\end{itemize}
+	\end{itemize}
+\end{frame}
+\begin{frame} [fragile]{\secname : \subsecname ~mit \subsubsecname}
 	\begin{lstlisting} {language=Rust}
 fn uunifast(&self, u: f64) -> Vec<f64> {
 	assert!(u <= 1.0 && u >= 0.0, "The processor utilization should be percentage between 0 and 1");
@@ -230,24 +309,28 @@ fn uunifast(&self, u: f64) -> Vec<f64> {
 		In uunifast.rs, ab Zeile 34
 	}
 \end{frame}
-\begin{frame} {\secname : \subsecname}
+\begin{frame} {\secname : \subsecname ~mit \subsubsecname}
 	Constraints für generierte Graphen  \\
 	Gilt $\forall i \in \{0..n-1\}$, n = Anzahl der Tasks, i = Index der Task im Schedule
 	\begin{itemize}
-		\item $c_i  \in \{10..100\} $ \\
+		\item $C_i  \in \{10..100\} $ \\
 		Die Computation time muss für alle Knoten zwischen 10 und 100 liegen.
-		\item $d_i \ge c_i + s_i $ \\
-		Die Deadline muss spät genug sein, sodass die Task vorher ausgeführt werden kann.
+		\item $d_i \ge C_i + s_i $ \\
+		Die Deadline muss spät genug sein, damit die Task vorher ausgeführt werden kann.
 		\item $s_i \ge d_{i-1}, $ wobei $s_0 = 0$ \\
 		Eine Task, welche früher gescheduled ist, muss beendet worden sein bevor die nächste startet. Zur Vereinfachung wird $s_i = d_{i-1}$ gesetzt.
-		\item $u_i =  \frac{c_i}{t_i}$ \\
-		Das Verhältnis aus Computation time und Periode muss der berechneten Utilization entsprechen. Dabei wird der Einfachheit halber $t_i = d_i$ gleichgesetzt.
+		\item $U_i =  \frac{C_i}{T_i}$ \\
+		Das Verhältnis aus Computation time und Periode muss der berechneten Utilization entsprechen. Dabei wird der Einfachheit halber $T_i = d_i$ gleichgesetzt.
 	\end{itemize}
 \end{frame}
-\subsection{Utilization mit Dirichlet Rescale Algorithmus}
-\begin{frame} {\secname : \subsecname}
+
+
+
+\subsubsection{Dirichlet Rescale Algorithmus}
+%\subsection{Utilization mit Dirichlet Rescale Algorithmus}
+\begin{frame}{\secname : \subsecname ~mit \subsubsecname}
 \end{frame}
-\subsection{Interface, Input und Output}
+%\subsection{Nutzer Interface, Beispiele für Input und Output}
 \begin{frame} {\secname : \subsecname}
 \end{frame}
 \section{Ergebnisse und Beispiele}
