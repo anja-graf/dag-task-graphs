@@ -32,7 +32,7 @@ impl Graph {
             );
             upper.clone()
         } else {
-            println!("Generating default upper bounds");
+            println!("Generating default upper bounds that ensure the task can be executed before its deadline");
             self.nodes
                 .iter()
                 .map(|node| node.computation_time as f64 / node.rel_deadline as f64)
@@ -49,7 +49,7 @@ impl Graph {
             );
             lower.clone()
         } else {
-            println!("Generating default lower bounds");
+            println!("Generating default lower bounds that ensure the task has an execution time of at least 10");
             // vec![0.0; n as usize]
             // ensure that computation time is >= 10
             self.nodes
@@ -62,6 +62,12 @@ impl Graph {
             "Lower bounds: {:?} \nUpper bounds: {:?}",
             lower, upper
         );
+
+        for i in 0..n {
+            assert!(lower[i as usize] <= upper[i as usize],"[ERROR] The lower bound for each node should not be greater than the upper bound!");
+        }
+
+
         // Call python script to compute utilization distribution
         let utilization: Vec<f64> = Self::call_python_drs(n, u, lower, upper);
         assert!(utilization.len() == self.nodes.len());
