@@ -50,7 +50,12 @@ impl Graph {
             lower.clone()
         } else {
             println!("Generating default lower bounds");
-            vec![0.0; n as usize]
+            // vec![0.0; n as usize]
+            // ensure that computation time is >= 10
+            self.nodes
+                .iter()
+                .map(|node| 10.0 / node.rel_deadline as f64)
+                .collect()
         };
 
         println!(
@@ -100,7 +105,8 @@ impl Graph {
                     "[ERROR] Could not distribute processor utilization, because the python module 'drs' is not installed"
                 );
             } else {
-                panic!("[ERROR] {}", String::from_utf8_lossy(&output.stderr));
+                //panic!("[ERROR] {}", String::from_utf8_lossy(&output.stderr));
+                panic!("[ERROR] Utilization calculation could not be performed, please try another total utilization!")
             }
         }
     }
