@@ -8,9 +8,8 @@ target/
 Cargo.lock
 *.dot
 *.svg
-*.png
 *.csv
-
+erdosrenyimodel/**/*.png
 drs
 *.txt
 
@@ -24,3 +23,11 @@ drs
 *.nav
 *.synctex.gz
 vortrag kopie.tex
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.run.xml
+*.lof
+*.lot

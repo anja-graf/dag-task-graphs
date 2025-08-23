@@ -9,6 +9,16 @@
 \usepackage{amsmath}
 \usepackage{pifont}
 \usepackage{include/listings-rust}
+\usepackage{tcolorbox}
+
+\tcbset{
+	colback=white,   % Hintergrundfarbe
+	colframe=black,  % Rahmenfarbe
+	boxrule=0.15mm,   % Rahmendicke
+	arc=0mm,         % abgerundete Ecken
+	left=2mm, right=2mm, top=1mm, bottom=1mm
+}
+
 
 \setbeamerfont{subsubsection in toc}{size=\normalsize}
 
@@ -16,7 +26,7 @@
 \title[Forschungsmodul]{Generierung von Task Graphs}
 \subtitle{Forschungsmodul Embedded Systems}
 \author{Anja Graf}
-\date[01.09.2025]{01. September 2025}
+\date[26.08.2025]{26. August 2025}
 
 \begin{document}
 \titleframe
@@ -34,19 +44,19 @@
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
 				\item<1-> Generieren eines Taskgraphen mit randomisierter Graphstruktur
-				      \onslide<2->{
+				      \onslide<1->{
 					      \begin{itemize}
 						      \item Knoten sind Tasks, \\ Kanten sind Abhängigkeiten
 						      \item Graph ist Directed und Acyclic (DAG)
 					      \end{itemize}
 				      }
-				      \onslide<3->{
+				      \onslide<2->{
 				\item Command Line Interface für Benutzerschnittstelle
 				      \begin{itemize}
 					      \item Übergabeparamter wie Knoten- oder Kantenanzahl
 				      \end{itemize}
 				      }
-				      \onslide<4->{
+				      \onslide<3->{
 				\item Output in Form von generierten Dateien
 				      }
 			\end{itemize}
@@ -54,27 +64,28 @@
 		\end{column}
 
 		\begin{column}{0.3\textwidth}
-			\onslide<2-> {
-				\includegraphics[width=0.4\linewidth]{images/slide2/undirected/graphcircle.png}
+			
+			\onslide<1-> {
+				\includegraphics[width=0.33\linewidth]{images/slide2/undirected/graphcircle.png}
 				\vspace*{0.1em}
 				\centering
 				\parbox{\linewidth}{ % Breite der Box (hier halbe Textbreite)
 					\raggedleft % Text rechtsbündig innerhalb der Box
 					\scriptsize % kleine Schrift
 					Ungerichteter, zyklischer Graph \\
-					\onslide<3->{
+					\onslide<2->{
 						Mit 3 Knoten, 3 Kanten}
 				}
 				\vspace*{0.1em}
-				\includegraphics[width=0.6\linewidth]{images/slide2/directed/graph.png}
+				\includegraphics[width=0.33\linewidth]{images/slide2/directed/graph.png}
 				\vspace*{0.1em}
 				\centering
 				\parbox{\linewidth}{ % Breite der Box (hier halbe Textbreite)
 					\raggedleft % Text rechtsbündig innerhalb der Box
 					\scriptsize % kleine Schrift
 					Gerichteter, azyklischer Graph \\
-					\onslide<3-> {
-						Mit 3 Knoten, 2 Kanten
+					\onslide<2-> {
+						Mit 3 Knoten, 3 Kanten
 					}
 				}
 			}
@@ -89,7 +100,7 @@
 	\end{center}
 	\begin{columns}
 		\onslide<2->{
-			\column{0.55\textwidth}
+			\column{0.5\textwidth}
 			$G(n,p)$ \\
 			n = Anzahl an Knoten \\
 			p = Wahrscheinlichkeit für Kanten
@@ -100,12 +111,12 @@
 		}
 		\onslide<3->{
 
-			\column{0.45\textwidth}
+			\column{0.48\textwidth}
 			$G(n,m)$ \\
 			n = Anzahl an Knoten \\
 			m = Anzahl an Kanten
 			\begin{itemize}
-				\item Wähle zwei zufällige Knoten aus
+				\item Wähle zwei zufällige unterschiedliche Knoten aus
 				\item Füge Kante zwischen Knoten hinzu, falls neue Kante
 				\item Iteriere, bis Anzahl m erreicht
 			\end{itemize}
@@ -123,16 +134,18 @@
 	Daher:
 	\begin{itemize}
 		\item[1.]<2-> Füge gerichtete, statt ungerichtete Kanten ein
-		\item[2.]<3-> Prüfe beim Hinzufügen ob eine der beiden Kanten $(i,j)$ oder $(j,i)$ bereits existiert
+		\item[2.]<3-> Prüfe beim Hinzufügen einer neuen Kante $e=(i,j) $, ob $(i,j)$ oder $(j,i)$ bereits existiert
+		\begin{itemize}
+			\item Falls ja darf e nicht eingefügt werden
+		\end{itemize}
 		\item[3.]<4-> Prüfe, ob es bereits Pfad $j $ nach $i$ gibt mittels rekursiven Tiefensuche
-		\item<5-> Falls ja, würde neue Kante $e=(i,j) $ Kreis schließen
-		      \onslide<6->{
-			      \begin{itemize}
-				      \item Darf nicht eingefügt werden
-			      \end{itemize}
-		      }
-		      \onslide<7-> {
-		\item Graph ist nun Directed und Acyclic \ding{51}
+		\onslide<5->{
+		\begin{itemize}
+			\item Falls ja darf e nicht eingefügt werden
+		\end{itemize}
+	}
+		      \onslide<6-> {
+		\item Graph ist Directed und Acyclic \ding{51}
 		      }
 	\end{itemize}
 	\end{column}
@@ -191,9 +204,9 @@
 				\item[] Arrival/Release time $a_i$
 				\item[] Start time $s_i$
 				\item[] Computation time $C_i$
-				\item[] Priority, set to $i$
-				\column{0.35\textwidth}
 				\item[] Finishing time $f_i$
+				\column{0.35\textwidth}
+				\item[] Priority, set to $i$
 				\item[] Absolute Deadline $d_i$
 				\item[] Relative Deadline $D_i = d_i - a_i$
 				\item[] Response time $R_i = f_i - a_i$
@@ -288,8 +301,8 @@
 
 
 \subsection{Utilization}
-\subsubsection{Uunifast Algorithmus}
-%\subsection{Utilization mit Uunifast Algorithmus}
+\subsubsection{UUnifast Algorithmus}
+
 \begin{frame}{\subsecname}
 	\begin{itemize}
 		\item Weitere Anforderung an die Parameterverteilung: \\
@@ -303,12 +316,66 @@
 			      \item \glqq Wie viel Prozessorzeit pro Zeiteinheit benötigen alle Tasks zusammen?\grqq
 			      \item Wenn $U > 1 $: Prozessor ist überlastet und Tasks sind nicht schedulable/echtzeitfähig
 		      \end{itemize}
-		\item Im Programm kann zwischen Uunifast und Drs Algorithmus gewählt werden
+		\item Im Programm kann zwischen UUnifast und Drs Algorithmus gewählt werden
 		      \begin{itemize}
 			      \item Dafür wird Parameter $U$ mitgegeben und daraus ein Vektor $U_1,U_2, ...,U_n$ berechnet
 			      \item Die entsprechenden Werte werden für jede Task i angepasst, damit das Verhältnis mit $U_i$ übereinstimmt
 		      \end{itemize}
 	\end{itemize}
+\end{frame}
+\begin{frame}[fragile]{\subsubsecname \ - Allgemein}
+	\begin{itemize}
+		\item ermöglicht Uniforme Verteilung der Gesamtauslastung U in O(n) Komplexität 
+		\item Funktionsweise: \\
+	\end{itemize}
+	\begin{columns}
+	\begin{column} {0.45\textwidth}
+	\begin{tcolorbox}
+		\begin{algorithm}[H]
+			\SetAlgoLined
+			\footnotesize
+			$U_{remaining} \gets U$ \\
+			\ForAll {$i \in {1..n - 1}$} {
+				$U_i \gets U_{remaining} \cdot \Big( {1 - rand^{\frac{1}{n - i}}} \Big)$ \\
+				$U_{remaining} \gets U_{remaining} - U_i $ 
+				\BlankLine
+				\BlankLine
+			}
+			$u_n \gets U_{remaining}$
+		\end{algorithm}
+	\end{tcolorbox}
+\end{column}
+\begin{column} {0.04\textwidth}
+	\centering {
+	$\iff$
+}
+\end{column}
+\begin{column} {0.45\textwidth}
+	\begin{tcolorbox}
+			\begin{algorithm}[H]
+				\SetAlgoLined
+				\footnotesize
+				$U_{remaining} \gets U$ \\
+				\ForAll {$i \in {1..n - 1}$} {
+					$next \gets U_{remaining} \cdot rand^{\frac{1}{n - i}}$ \\
+					$U_i \gets U_{remaining} - next $ \\
+					$U_{remaining} \gets next $ 
+				}
+				$u_n \gets U_{remaining}$
+			\end{algorithm}
+	\end{tcolorbox}
+\end{column}
+\end{columns}
+\BlankLine
+\begin{itemize}
+	\item Weiterführende Details dazu u.a. in 
+	\begin{itemize}
+		\item "Biasing Effects in Schedulability Measures" \
+		von Bini, Buttazzom, Seite 6f.
+		\item "Techniques For The Synthesis Of Multiprocessor Tasksets"\
+		von Emberson, Stafford, Davis
+	\end{itemize}
+\end{itemize}
 \end{frame}
 \begin{frame} [fragile]{\subsecname ~mit \subsubsecname}
 	\begin{lstlisting} [language=Rust, style=colouredRust,xleftmargin=15pt, frame=single]
@@ -333,22 +400,8 @@ fn uunifast(&self, u: f64) -> Vec<f64> {
 	\parbox{0.5\linewidth}{ % Breite der Box (hier halbe Textbreite)
 		\raggedleft % Text rechtsbündig innerhalb der Box
 		\scriptsize % kleine Schrift
-		In uunifast.rs, ab Zeile 34
+		In uunifast.rs, ab Zeile 17
 	}
-\end{frame}
-\begin{frame} {\subsecname ~mit \subsubsecname}
-	Constraints für generierte Graphen  \\
-	Gilt $\forall i \in \{0..n-1\}$, n = Anzahl der Tasks, i = Index der Task im Schedule
-	\begin{itemize}
-		\item $C_i  \in \{10..100\} $ \\
-		      Die Computation time muss für alle Knoten zwischen 10 und 100 liegen.
-		\item $d_i \ge C_i + s_i $ \\
-		      Die Deadline muss spät genug sein, damit die Task vorher ausgeführt werden kann.
-		\item $s_i \ge d_{i-1}, $ wobei $s_0 = 0$ \\
-		      Eine Task, welche früher gescheduled ist, muss beendet worden sein bevor die nächste startet. Zur Vereinfachung wird $s_i = d_{i-1}$ gesetzt.
-		\item $U_i =  \frac{C_i}{T_i}$ \\
-		      Das Verhältnis aus Computation time und Periode muss der berechneten Utilization entsprechen. Dabei wird der Einfachheit halber $T_i = d_i$ gleichgesetzt.
-	\end{itemize}
 \end{frame}
 
 \begin{frame} {\subsecname ~mit \subsubsecname}
@@ -356,37 +409,54 @@ fn uunifast(&self, u: f64) -> Vec<f64> {
 	Gilt $\forall i \in \{0..n-1\}$, n = Anzahl der Tasks, i = Index der Task im Schedule
 	% --- obere Hälfte ---
 	\begin{columns}[T] % T = top aligned
-		\begin{column}{0.5\textwidth}
-			$C_i  \in \{10..100\} $ \\
-			Die Computation time muss für alle Knoten zwischen 10 und 100 liegen.
+		\begin{column}{0.45\textwidth}
+			\begin{tcolorbox}
+			$C_i  \in \{10..100\} $
+			\end{tcolorbox}
 		\end{column}
-		\begin{column}{0.5\textwidth}
-			$d_i \ge C_i + s_i $ \\
-			Die Deadline muss spät genug sein, damit die Task vorher ausgeführt werden kann.
+		\begin{column}{0.45\textwidth}
+			\begin{tcolorbox}
+			$d_i \ge C_i + s_i $
+			\end{tcolorbox}
 		\end{column}
 	\end{columns}
-	
-	\vfill % Abstand zwischen obere/untere Hälfte
 	
 	% --- untere Hälfte ---
 	\begin{columns}[T]
-		\begin{column}{0.48\textwidth}
-		    $s_i \ge d_{i-1}, $ wobei $s_0 = 0$ \\
-			Eine Task, welche früher gescheduled ist, muss beendet worden sein bevor die nächste startet. Zur Vereinfachung wird $s_i = d_{i-1}$ gesetzt.
+		\begin{column}{0.45\textwidth}
+			\begin{tcolorbox}
+			$s_i \ge d_{i-1}, $ wobei $s_0 = 0$ \\
+			Der Einfachheit halber $s_i = d_{i-1}$ 
+			\end{tcolorbox}
 		\end{column}
-		\begin{column}{0.48\textwidth}
-			$U_i =  \frac{C_i}{T_i}$ \\
-			Das Verhältnis aus Computation time und Periode muss der berechneten Utilization entsprechen. Dabei wird der Einfachheit halber $T_i = d_i$ gleichgesetzt.
+		\begin{column}{0.45\textwidth}
+			\begin{tcolorbox}
+				$U_i =  \frac{C_i}{T_i}$ \\
+				Der Einfachheit halber $T_i = d_i$ 
+			\end{tcolorbox}
 		\end{column}
 	\end{columns}
+	\vspace{5mm}
+
+Es kann durch bestimmte Inputs unmöglich sein, alle Constraints zu erfüllen!
+\begin{itemize}
+	\item z.B. Wenn $C_i$ neu gesetzt wird: kleines $U_i $ $\rightarrow$ kleines $C_i$ $\rightarrow$ kann $C_i \ge 10$ verletzen
+	\item z.B. Wenn $d_i$ neu gesetzt wird: großes $U_i$ $\rightarrow$ kleines $d_i$ $\rightarrow$ kann $< C_i + s_i$ sein
+\end{itemize}
+
 \end{frame}
 
 
 \subsubsection{Dirichlet Rescale Algorithmus}
-%\subsection{Utilization mit Dirichlet Rescale Algorithmus}
 \begin{frame}{\subsecname ~mit \subsubsecname}
+	\begin{itemize}
+		\item Lösungsansatz: DRS Algorithmus
+		\item Erlaubt zusätzliche Vektoren für untere und obere Schranken
+		\item Verwendet iteratives Rescaling solange Elemente außerhalb liegen
+		\item Für jedes $U_i$: LB $ \frac{10}{d_i}\ , $ 
+		UB $\frac{C_i}{d_i}\  $ (falls vorher Parametervergabe) $, \forall i \in {0..n - 1}$ 
+	\end{itemize}
 \end{frame}
-%\subsection{Nutzer Interface, Beispiele für Input und Output}
 \begin{frame} {\subsecname}
 \end{frame}
 \subsection{Ergebnisse und Beispiele}
