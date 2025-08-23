@@ -8,179 +8,200 @@
 \usepackage{tikz}
 \usepackage{amsmath}
 \usepackage{pifont}
+\usepackage{include/listings-rust}
 
 \setbeamerfont{subsubsection in toc}{size=\normalsize}
-\lstset{
-	basicstyle=\ttfamily\footnotesize,
-	keywordstyle=\color{blue},
-	commentstyle=\color{gray},
-	stringstyle=\color{red},
-	showstringspaces=false,
-	frame=single,
-	breaklines=true
-}
 
 
 \title[Forschungsmodul]{Generierung von Task Graphs}
 \subtitle{Forschungsmodul Embedded Systems}
 \author{Anja Graf}
-\date[06.08.2025]{06. August 2025}
+\date[01.09.2025]{01. September 2025}
 
 \begin{document}
 \titleframe
 
 % erneutes Bauen notwendig, um Gliederung zu aktualisieren
 \begin{frame}
-    \frametitle{Gliederung}
-    \tableofcontents
+	\frametitle{Gliederung}
+	\tableofcontents
 \end{frame}
 
 \section{Zielsetzung des Forschungsmoduls}
 
 \begin{frame} {\secname }
 	\begin{columns}[c]
-	\begin{column}{0.6\textwidth}
-		\begin{itemize}
-			\item Generieren eines Taskgraphen mit randomisierter Graphstruktur
+		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item Dabei: Knoten sind Tasks, Kanten sind Abhängigkeiten 
-				\item Graph ist Directed und Acyclic (DAG)
+				\item<1-> Generieren eines Taskgraphen mit randomisierter Graphstruktur
+				      \onslide<2->{
+					      \begin{itemize}
+						      \item Knoten sind Tasks, \\ Kanten sind Abhängigkeiten
+						      \item Graph ist Directed und Acyclic (DAG)
+					      \end{itemize}
+				      }
+				      \onslide<3->{
+				\item Command Line Interface für Benutzerschnittstelle
+				      \begin{itemize}
+					      \item Übergabeparamter wie Knoten- oder Kantenanzahl
+				      \end{itemize}
+				      }
+				      \onslide<4->{
+				\item Output in Form von generierten Dateien
+				      }
 			\end{itemize}
-			\item Command Line Interface für Benutzerschnittstelle
-			\begin{itemize}
-				\item Übergabeparamter wie Knoten- oder Kantenanzahl
-			\end{itemize}
-			\item Output in Form von generierten Dateien 
-		\end{itemize}
-	\end{column}
-	\begin{column}{0.3\textwidth}
-		\includegraphics[width=0.4\linewidth]{images/undirected/graphcircle.png}
-		\vspace*{0.1em}
-		\centering
-		\parbox{\linewidth}{ % Breite der Box (hier halbe Textbreite)
-			\raggedleft % Text rechtsbündig innerhalb der Box
-			\scriptsize % kleine Schrift
-			Ungerichteter, zyklischer Graph \\
-			Mit 3 Knoten, 3 Kanten
-		}
-		\vspace*{0.1em}
-		\includegraphics[width=0.6\linewidth]{images/directed/graph.png}
-		\vspace*{0.1em}
-		\centering
-		\parbox{\linewidth}{ % Breite der Box (hier halbe Textbreite)
-			\raggedleft % Text rechtsbündig innerhalb der Box
-			\scriptsize % kleine Schrift
-			Gerichteter, azyklischer Graph \\
-			Mit 3 Knoten, 2 Kanten
-	}
-	\end{column}
+
+		\end{column}
+
+		\begin{column}{0.3\textwidth}
+			\onslide<2-> {
+				\includegraphics[width=0.4\linewidth]{images/slide2/undirected/graphcircle.png}
+				\vspace*{0.1em}
+				\centering
+				\parbox{\linewidth}{ % Breite der Box (hier halbe Textbreite)
+					\raggedleft % Text rechtsbündig innerhalb der Box
+					\scriptsize % kleine Schrift
+					Ungerichteter, zyklischer Graph \\
+					\onslide<3->{
+						Mit 3 Knoten, 3 Kanten}
+				}
+				\vspace*{0.1em}
+				\includegraphics[width=0.6\linewidth]{images/slide2/directed/graph.png}
+				\vspace*{0.1em}
+				\centering
+				\parbox{\linewidth}{ % Breite der Box (hier halbe Textbreite)
+					\raggedleft % Text rechtsbündig innerhalb der Box
+					\scriptsize % kleine Schrift
+					Gerichteter, azyklischer Graph \\
+					\onslide<3-> {
+						Mit 3 Knoten, 2 Kanten
+					}
+				}
+			}
+		\end{column}
 	\end{columns}
 \end{frame}
-\section{Funktionsweise und Inhalt}
+\section{Funktionsweise}
 \subsection{Graphgenerierung mit Erdős–Rényi Modell}
-\begin{frame} {\secname : \subsecname}
+\begin{frame} {\subsecname}
 	\begin{center}
 		\Large\textbf{Zwei Varianten des Modells:}
 	\end{center}
 	\begin{columns}
 		\onslide<2->{
-		\column{0.55\textwidth} 
-		$G(n,p)$ \\
-		n = Anzahl an Knoten \\
-		p = Wahrscheinlichkeit für Kanten
-		\begin{itemize}
-			\item Iteriere über geshuffelte Knotenvektoren, um Knoten i, j für jede mögliche Kante $e=\{i,j\} $ zu erhalten ($i \ne j$)
-			\item Füge diese Kante e mit Wahrscheinlichkeit p hinzu
-		\end{itemize}
-	}
-	\onslide<3->{
-		
-		\column{0.45\textwidth}
-		$G(n,m)$ \\
-		n = Anzahl an Knoten \\
-		m = Anzahl an Kanten
-		\begin{itemize}
-			\item Wähle zwei zufällige Knoten aus
-			\item Füge Kante zwischen Knoten hinzu, falls neue Kante
-			\item Iteriere, bis Anzahl m erreicht
-		\end{itemize}
-}
+			\column{0.55\textwidth}
+			$G(n,p)$ \\
+			n = Anzahl an Knoten \\
+			p = Wahrscheinlichkeit für Kanten
+			\begin{itemize}
+				\item Iteriere über geshuffelte Knotenvektoren, um Knoten i, j für jede mögliche Kante $e=\{i,j\} $ zu erhalten ($i \ne j$)
+				\item Füge diese Kante e mit Wahrscheinlichkeit p hinzu
+			\end{itemize}
+		}
+		\onslide<3->{
+
+			\column{0.45\textwidth}
+			$G(n,m)$ \\
+			n = Anzahl an Knoten \\
+			m = Anzahl an Kanten
+			\begin{itemize}
+				\item Wähle zwei zufällige Knoten aus
+				\item Füge Kante zwischen Knoten hinzu, falls neue Kante
+				\item Iteriere, bis Anzahl m erreicht
+			\end{itemize}
+		}
 	\end{columns}
 
 	\vspace*{1em}
 	\onslide<4->{
-	Insgesamt sind beide Varianten noch ungerichtet und prüfen nicht auf Kreisfreiheit!
-}
+		Insgesamt sind beide Varianten noch ungerichtet und prüfen nicht auf Kreisfreiheit!
+	}
 \end{frame}
-\begin{frame} {\secname : \subsecname}
+\begin{frame} {\subsecname}
 	\begin {columns}
-		\begin {column}{0.6\textwidth}
+	\begin {column}{0.6\textwidth}
 	Daher:
 	\begin{itemize}
-		\item Füge gerichtete, statt ungerichtete Kanten ein
-		\item Prüfe beim Hinzufügen ob eine der beiden Kanten $(i,j)$ oder $(j,i)$ bereits existiert
-		\item Prüfe, ob es bereits Pfad $j $ nach $i$ gibt mittels rekursiven Tiefensuche
-		\item Falls ja, würde neue Kante $e=(i,j) $ Kreis schließen 
-		\begin{itemize}
-			\item Darf nicht eingefügt werden 
-		\end{itemize}
-		\onslide<2-> {
+		\item[1.]<2-> Füge gerichtete, statt ungerichtete Kanten ein
+		\item[2.]<3-> Prüfe beim Hinzufügen ob eine der beiden Kanten $(i,j)$ oder $(j,i)$ bereits existiert
+		\item[3.]<4-> Prüfe, ob es bereits Pfad $j $ nach $i$ gibt mittels rekursiven Tiefensuche
+		\item<5-> Falls ja, würde neue Kante $e=(i,j) $ Kreis schließen
+		      \onslide<6->{
+			      \begin{itemize}
+				      \item Darf nicht eingefügt werden
+			      \end{itemize}
+		      }
+		      \onslide<7-> {
 		\item Graph ist nun Directed und Acyclic \ding{51}
-		}
+		      }
 	\end{itemize}
 	\end{column}
 	\begin {column}{0.3\textwidth}
-		\vspace*{0.25cm}
-		\includegraphics [width=\columnwidth] {images/circle.png}
+	\vspace*{0.25cm}
+	\only<1> {
+		\includegraphics [width=\columnwidth] {images/slide4/initial.png}
+	}
+	\only<2> {
+		\includegraphics [width=\columnwidth] {images/slide4/first.png}
+	}
+	\only<3,4> {
+		\includegraphics [width=\columnwidth] {images/slide4/second.png}
+	}
+	\only<5> {
+		\includegraphics [width=\columnwidth] {images/slide4/third.png}
+	}
+	\only<6-> {
+		\includegraphics [width=\columnwidth] {images/slide4/first.png}
+	}
 	\end {column}
 	\end{columns}
-\end{frame}	
+\end{frame}
 \subsection{Taskparameter}
-\begin{frame} {\secname : \subsecname}
+\begin{frame} {\subsecname}
 	\begin{center}
-	\begin{tikzpicture}
-		
-		% Achse
-		\draw[ultra thick, ->] (0,0) -- (12,0);
-		
-		% Punkte
-		\filldraw (0,0) circle (2pt) node[below] {$a_i$};
-		\filldraw (3,0) circle (2pt) node[below] {$s_i$};
-		\filldraw (6,0) circle (2pt) node[below] {$f_i$};
-		\filldraw (10,0) circle (2pt) node[below] {$d_i$};
-		
-		% Rechteck 
-		\draw[fill=gray!30] (3,0.2) rectangle (6,1);
-		\node at (4.5,0.6) {Task i};
-		
-		% Pfeile
-		\draw[->,line width=2pt] (0,0.1) -- (0,1); % senkrechter Pfeil ab ai
-		\draw[->,line width=2pt] (10,1) -- (10,0.1); % senkrechter Pfeil ab di
-		
-		\draw[<->] (0,2) -- node[above] {$D_i$} (10,2);
-		\draw[<->] (3,1.4) -- node[above] {$C_i$} (6,1.4);
-		\draw[<->] (0,-0.8) -- node[below] {$R_i$} (5.9,-0.8);
-		\draw[<->] (6,-0.8) -- node[below] {$- L_i$} (10,-0.8);
-		
-	\end{tikzpicture}
-	\begin{itemize}
-		\begin{columns}
-		\column{0.4\textwidth} 
-		%\item[] Task name  $i$
-		\item[] Computation time $C_i$
-		\item[] Arrival/Release time $a_i$
-		\item[] Absolute Deadline $d_i$
-		\item[] Relative Deadline $D_i = d_i - a_i$
-		\column{0.35\textwidth} 
-		\item[] Start time $s_i$
-		\item[] Finishing time $f_i$
-		\item[] Response time $R_i = f_i - a_i$
-		\item[] Lateness $L_i = f_i - d_i$
-		\item[] Priority, set to $i$
-		%\item[] Priority is set to name
-		\end{columns}
-	\end{itemize}
-\end{center}
+		\begin{tikzpicture}
+
+			% Achse
+			\draw[ultra thick, ->] (0,0) -- (12,0);
+
+			% Punkte
+			\filldraw (0,0) circle (2pt) node[below] {$a_i$};
+			\filldraw (3,0) circle (2pt) node[below] {$s_i$};
+			\filldraw (6,0) circle (2pt) node[below] {$f_i$};
+			\filldraw (10,0) circle (2pt) node[below] {$d_i$};
+
+			% Rechteck 
+			\draw[fill=gray!30] (3,0.2) rectangle (6,1);
+			\node at (4.5,0.6) {Task i};
+
+			% Pfeile
+			\draw[->,line width=2pt] (0,0.1) -- (0,1); % senkrechter Pfeil ab ai
+			\draw[->,line width=2pt] (10,1) -- (10,0.1); % senkrechter Pfeil ab di
+
+			\draw[<->] (0,2) -- node[above] {$D_i$} (10,2);
+			\draw[<->] (3,1.4) -- node[above] {$C_i$} (6,1.4);
+			\draw[<->] (0,-0.8) -- node[below] {$R_i$} (5.9,-0.8);
+			\draw[<->] (6,-0.8) -- node[below] {$- L_i$} (10,-0.8);
+
+		\end{tikzpicture}
+		\begin{itemize}
+			\begin{columns}
+				\column{0.4\textwidth}
+				%\item[] Task name  $i$
+				\item[] Arrival/Release time $a_i$
+				\item[] Start time $s_i$
+				\item[] Computation time $C_i$
+				\item[] Priority, set to $i$
+				\column{0.35\textwidth}
+				\item[] Finishing time $f_i$
+				\item[] Absolute Deadline $d_i$
+				\item[] Relative Deadline $D_i = d_i - a_i$
+				\item[] Response time $R_i = f_i - a_i$
+				\item[] Lateness $L_i = f_i - d_i$
+				%\item[] Priority is set to name
+			\end{columns}
+		\end{itemize}
+	\end{center}
 \end{frame}
 
 
@@ -190,117 +211,123 @@
 
 
 \subsection{Uniprocessor Scheduling}
-\begin{frame} {\secname : \subsecname}
+\begin{frame} {\subsecname}
 	Ziel: Ausführungsreihenfolge finden
 	\begin{itemize}
 		\item Dabei sollen Abhängigkeiten berücksichtigt werden
-		\item Also falls Kante $(i,j) \in E $ für Graph $G = (V,E)$ muss Task i vor Task j ausgeführt worden sein 
+		\item Also falls Kante $(i,j) \in E $ für Graph $G = (V,E)$ muss Task i vor Task j ausgeführt worden sein
 		\item Dafür generieren wir zu Beginn eine Hash Map
-		 \begin{itemize}
-		 	\item Keys: Knoten bzw. Task
-		 	\item Values: Jeweils eine Liste aller Vorgänger 
-		 	(z.B.  $j \in$ Value Liste von Key i)
-		 \end{itemize}
-		 \item Dann fügen wir iterativ bereitstehende Tasks mit der höchsten Priorität in den Schedule ein 
-		 \begin{itemize}
-		 	\item Task ist bereit/ready, falls voher keine abhängigen Tasks mehr ausgeführt werden müssen
-	 \end{itemize}
-		 
-		 
+		      \begin{itemize}
+			      \item Keys: Knoten bzw. Task
+			      \item Values: Jeweils eine Liste aller Vorgänger
+			            (z.B.  $j \in$ Value Liste von Key i)
+		      \end{itemize}
+		\item Dann fügen wir iterativ bereitstehende Tasks mit der höchsten Priorität in den Schedule ein
+		      \begin{itemize}
+			      \item Task ist bereit/ready, falls voher keine abhängigen Tasks mehr ausgeführt werden müssen
+		      \end{itemize}
+
+
 	\end{itemize}
 \end{frame}
-\begin{frame} [fragile]{\secname : Pseudocode für \subsecname}
-\begin{center}
-\fbox{%
-\begin{minipage}{0.9\linewidth}
-\begin{algorithm}[H]
-	\SetAlgoLined
-	\footnotesize
-	$schedule\gets []$,
-	$ready\gets $ \{\},
-	$pre\gets $ get\_predecessor\_hash\_map()\\
-	\ForAll{$key, value \in pre : value =  \emptyset$}
-	{
-		$ready.add(key)$\
-	}
-	// throw error if ready = $\emptyset$ \\
-	\While{ready $\ne \emptyset$}{
-		highest\_priority $\gets $ ready.get\_min() \\
-		ready.remove(highest\_priority) \\ 
-		pre.remove(highest\_priority) \\
-		schedule.append(highest\_priority) \\
-		\ForAll{$key, value \in pre : highest\_priority \in value $}
-		{
-			$value \gets value \setminus highest\_priority$ \\
-			\If{$value = \emptyset$}{ready.add(key)}
-		}
-	}
-	\Return{schedule}
-\end{algorithm}
-\end{minipage}}
-\end{center}
+\begin{frame} [fragile]{Pseudocode für \subsecname}
+	\begin{center}
+		\fbox{%
+			\begin{minipage}{0.9\linewidth}
+				\begin{algorithm}[H]
+					\SetAlgoLined
+					\footnotesize
+					\onslide<1->{
+						$schedule\gets []$,
+						$ready\gets $ \{\},
+						$pre\gets $ get\_predecessor\_hash\_map()\\
+						\ForAll{$key, value \in pre : value =  \emptyset$}
+						{
+							$ready.add(key)$\
+						}
+						// throw error if ready = $\emptyset$ \\
+					}
+					\onslide<2->{
+						\While{ready $\ne \emptyset$}{
+							highest\_priority $\gets $ ready.get\_min() \\
+							ready.remove(highest\_priority) \\
+							pre.remove(highest\_priority) \\
+							schedule.append(highest\_priority) \\
+							\onslide<3->{
+								\ForAll{$key, value \in pre : highest\_priority \in value $}
+								{
+									$value \gets value \setminus highest\_priority$ \\
+									\If{$value = \emptyset$}{ready.add(key)}
+								}
+							}
+						}
+						\Return{schedule}
+					}
+				\end{algorithm}
+			\end{minipage}}
+	\end{center}
 \end{frame}
 
-\begin{frame}  {\secname : Beispiel Graphgenerierung und Parametervergabe}
+\begin{frame}  {Beispiel Graphgenerierung und Parametervergabe}
 	\begin{columns}
 		\begin{column} {0.5\textwidth}
 			\begin{flushright}
-				\includegraphics [width=0.7\columnwidth] {images/ExampleGraph.png}
+				\includegraphics [width=0.9\columnwidth] {images/slide8/graph.png}
 			\end{flushright}
 		\end{column}
 		\begin{column}{0.65\textwidth}
-	\begin{itemize}
-		\item Beispielhafter Output des Programms bei Aufruf mit Parametern \textit{--nodes 5 --edges 6} und Auswahl des G(n,m) Erdős–Rényi Modell
-	\end{itemize}
-	\vspace*{4mm}
-			\includegraphics [width=0.9\columnwidth] {images/ExampleGraph2.png}
-	
+			\begin{itemize}
+				\item Beispielhafter Output des Programms bei Aufruf mit Parametern \textit{--nodes 5 --edges 6} und Auswahl des G(n,m) Erdős–Rényi Modell
+			\end{itemize}
+			\vspace*{4mm}
+			\includegraphics [width=0.9\columnwidth] {images/slide8/taskparameter.png}
+
 		\end{column}
-\end{columns}	
+	\end{columns}
 \end{frame}
 
 
 \subsection{Utilization}
 \subsubsection{Uunifast Algorithmus}
 %\subsection{Utilization mit Uunifast Algorithmus}
-\begin{frame}{\secname : \subsecname}
+\begin{frame}{\subsecname}
 	\begin{itemize}
 		\item Weitere Anforderung an die Parameterverteilung: \\
-		Berücksichtigung der Auslastung von Tasks
+		      Berücksichtigung der Auslastung von Tasks
 		\item Utilization für Task i definiert als $U_i = \frac{C_i} { T_i }$
-		\begin{itemize}
-			\item dabei $T_i$ Periode, d.h. fester Zeitabstand, in welchem die Task i wiederholt ausgeführt werden soll
-		\end{itemize}
+		      \begin{itemize}
+			      \item dabei $T_i$ Periode, d.h. fester Zeitabstand, in welchem die Task i wiederholt ausgeführt werden soll
+		      \end{itemize}
 		\item Gesamtauslastung des Prozessors $U = \sum_{i = 1}^{n} U_i = \sum_{i = 1}^{n} \frac{C_i}{T_i}$
-		\begin{itemize}
-			\item \glqq Wie viel Prozessorzeit pro Zeiteinheit benötigen alle Tasks zusammen?\grqq
-		\item Wenn $U > 1 $: Prozessor ist überlastet und Tasks sind nicht schedulable/echtzeitfähig
-	\end{itemize}
-	\item Im Programm kann zwischen Uunifast und Drs Algorithmus gewählt werden
-	\begin{itemize}
-		\item Dafür wird Parameter $U$ mitgegeben und daraus ein Vektor $U_1,U_2, ...,U_n$ berechnet 
-		\item Die entsprechenden Werte werden für jede Task i angepasst, damit das Verhältnis mit $U_i$ übereinstimmt
-	\end{itemize}
+		      \begin{itemize}
+			      \item \glqq Wie viel Prozessorzeit pro Zeiteinheit benötigen alle Tasks zusammen?\grqq
+			      \item Wenn $U > 1 $: Prozessor ist überlastet und Tasks sind nicht schedulable/echtzeitfähig
+		      \end{itemize}
+		\item Im Programm kann zwischen Uunifast und Drs Algorithmus gewählt werden
+		      \begin{itemize}
+			      \item Dafür wird Parameter $U$ mitgegeben und daraus ein Vektor $U_1,U_2, ...,U_n$ berechnet
+			      \item Die entsprechenden Werte werden für jede Task i angepasst, damit das Verhältnis mit $U_i$ übereinstimmt
+		      \end{itemize}
 	\end{itemize}
 \end{frame}
-\begin{frame} [fragile]{\secname : \subsecname ~mit \subsubsecname}
-	\begin{lstlisting} {language=Rust}
+\begin{frame} [fragile]{\subsecname ~mit \subsubsecname}
+	\begin{lstlisting} [language=Rust, style=colouredRust,xleftmargin=15pt, frame=single]
 fn uunifast(&self, u: f64) -> Vec<f64> {
-	assert!(u <= 1.0 && u >= 0.0, "The processor utilization should be percentage between 0 and 1");
+	assert!(u <= 1.0 && u >= 0.0, 
+	  "The processor utilization should be value between 0 and 1");
 	let mut sum_u = u;
 	let mut rng = rand::thread_rng();
 	let mut vect_u: Vec<f64> = Vec::new();
 	for i in 0..self.nodes.len() - 1 {
-		let next_sum_u = sum_u * rng.r#gen::<f64>().powf(1.0 / (self.nodes.len() - i) as f64);
+		let next_sum_u = sum_u * rng.r#gen::<f64>()
+			.powf(1.0 / (self.nodes.len() - i) as f64);
 		vect_u.push(sum_u - next_sum_u);
 		sum_u = next_sum_u;
 	}
 	vect_u.push(sum_u);
-	println!("{:?}", vect_u);
 	assert!(u - vect_u.iter().sum::<f64>().abs() < 1e-6);
 	vect_u
-}
-	\end{lstlisting}
+}\end{lstlisting}
 	\vspace*{-0.3em}
 	\hfill % schiebt den Text nach rechts
 	\parbox{0.5\linewidth}{ % Breite der Box (hier halbe Textbreite)
@@ -309,33 +336,62 @@ fn uunifast(&self, u: f64) -> Vec<f64> {
 		In uunifast.rs, ab Zeile 34
 	}
 \end{frame}
-\begin{frame} {\secname : \subsecname ~mit \subsubsecname}
+\begin{frame} {\subsecname ~mit \subsubsecname}
 	Constraints für generierte Graphen  \\
 	Gilt $\forall i \in \{0..n-1\}$, n = Anzahl der Tasks, i = Index der Task im Schedule
 	\begin{itemize}
 		\item $C_i  \in \{10..100\} $ \\
-		Die Computation time muss für alle Knoten zwischen 10 und 100 liegen.
+		      Die Computation time muss für alle Knoten zwischen 10 und 100 liegen.
 		\item $d_i \ge C_i + s_i $ \\
-		Die Deadline muss spät genug sein, damit die Task vorher ausgeführt werden kann.
+		      Die Deadline muss spät genug sein, damit die Task vorher ausgeführt werden kann.
 		\item $s_i \ge d_{i-1}, $ wobei $s_0 = 0$ \\
-		Eine Task, welche früher gescheduled ist, muss beendet worden sein bevor die nächste startet. Zur Vereinfachung wird $s_i = d_{i-1}$ gesetzt.
+		      Eine Task, welche früher gescheduled ist, muss beendet worden sein bevor die nächste startet. Zur Vereinfachung wird $s_i = d_{i-1}$ gesetzt.
 		\item $U_i =  \frac{C_i}{T_i}$ \\
-		Das Verhältnis aus Computation time und Periode muss der berechneten Utilization entsprechen. Dabei wird der Einfachheit halber $T_i = d_i$ gleichgesetzt.
+		      Das Verhältnis aus Computation time und Periode muss der berechneten Utilization entsprechen. Dabei wird der Einfachheit halber $T_i = d_i$ gleichgesetzt.
 	\end{itemize}
 \end{frame}
 
+\begin{frame} {\subsecname ~mit \subsubsecname}
+	Constraints für generierte Graphen  \\
+	Gilt $\forall i \in \{0..n-1\}$, n = Anzahl der Tasks, i = Index der Task im Schedule
+	% --- obere Hälfte ---
+	\begin{columns}[T] % T = top aligned
+		\begin{column}{0.5\textwidth}
+			$C_i  \in \{10..100\} $ \\
+			Die Computation time muss für alle Knoten zwischen 10 und 100 liegen.
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			$d_i \ge C_i + s_i $ \\
+			Die Deadline muss spät genug sein, damit die Task vorher ausgeführt werden kann.
+		\end{column}
+	\end{columns}
+	
+	\vfill % Abstand zwischen obere/untere Hälfte
+	
+	% --- untere Hälfte ---
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+		    $s_i \ge d_{i-1}, $ wobei $s_0 = 0$ \\
+			Eine Task, welche früher gescheduled ist, muss beendet worden sein bevor die nächste startet. Zur Vereinfachung wird $s_i = d_{i-1}$ gesetzt.
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			$U_i =  \frac{C_i}{T_i}$ \\
+			Das Verhältnis aus Computation time und Periode muss der berechneten Utilization entsprechen. Dabei wird der Einfachheit halber $T_i = d_i$ gleichgesetzt.
+		\end{column}
+	\end{columns}
+\end{frame}
 
 
 \subsubsection{Dirichlet Rescale Algorithmus}
 %\subsection{Utilization mit Dirichlet Rescale Algorithmus}
-\begin{frame}{\secname : \subsecname ~mit \subsubsecname}
+\begin{frame}{\subsecname ~mit \subsubsecname}
 \end{frame}
 %\subsection{Nutzer Interface, Beispiele für Input und Output}
-\begin{frame} {\secname : \subsecname}
+\begin{frame} {\subsecname}
 \end{frame}
-\section{Ergebnisse und Beispiele}
+\subsection{Ergebnisse und Beispiele}
 \begin{frame} {\secname }
-	\includegraphics [width=0.2 \textwidth] {images/graph.png}
+	\includegraphics [width=0.2 \textwidth] {images/slide14/graph.png}
 \end{frame}
 
 \end{document}

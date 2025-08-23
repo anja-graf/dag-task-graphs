@@ -17,7 +17,7 @@ impl Graph {
     fn uunifast(&self, u: f64) -> Vec<f64> {
         assert!(
             u <= 1.0 && u >= 0.0,
-            "The processor utilization should be percentage between 0 and 1"
+            "The processor utilization should be value between 0 and 1"
         );
         let mut sum_u = u;
         let mut rng = rand::thread_rng();

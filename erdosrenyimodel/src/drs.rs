@@ -16,7 +16,7 @@ impl Graph {
     ) {
         assert!(
             u <= 1.0 && u >= 0.0,
-            "The processor utilization should be percentage between 0 and 1"
+            "The processor utilization should be value between 0 and 1"
         );
 
         // Assert minimal requirements for useful upper and lower bounds if they are given
