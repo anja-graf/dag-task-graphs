@@ -2,9 +2,9 @@ use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[command(
-    name = "erdosrenyimodel",
+    name = "task_graphs",
     about = "
-The erdosrenyimodel tool generates a random task graph using one of two variants of the Erdős–Rényi model:
+The task_graphs tool generates a random task graph using one of two variants of the Erdős–Rényi model:
     G(n, p) – a graph with n nodes where each edge is included with independent probability p.
     G(n, m) – a graph with n nodes and m edges chosen uniformly at random.
 For more information on the Erdős–Rényi model, see also https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model"

@@ -10,7 +10,7 @@
             "name": "Cargo launch",
             "cargo": {
                 "args": ["run"],
-                "cwd": "${workspaceFolder}/erdosrenyimodel",
+                "cwd": "${workspaceFolder}/task_graphs",
             },
             "args": ["--nodes","6"]
         },

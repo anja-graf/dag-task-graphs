@@ -1,10 +1,10 @@
 # Aufgabe
 
-Aktuell:  
+Zuletzt:  
 - [x] [Modul drs python](https://pypi.org/project/drs/) einbinden, min max mitgeben oder default wert
 - [x] Evt. mit Text file für minimum maximum sequence (max=[], min=[]) => wenn len nicht = knotenanzahl abbruch
 - [x] Warnung/Error ausgeben falls nicht möglich bei uunifast
-- [ ] [Vortrag](#presentation) vorbereiten 
+- [x] [Vortrag](#presentation) vorbereiten 
 - [x] falls generiert mit uunifast: legende anpassen
 
 Zusätzlich:

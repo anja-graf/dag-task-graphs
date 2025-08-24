@@ -1,22 +1,22 @@
-# Notizen
+# Generierung von Task Graphen 
 
-Mit diesem Programm lassen sich verschiedene Graphen generieren. Dafür kann mittels `cargo run [ARGS]` im `erdosrenyimodel` Ordner das Projekt kompiliert und ausgeführt werden. 
+Mit diesem Programm lassen sich verschiedene Task Graphen generieren. Dafür kann mittels `cargo run [ARGS]` im `task_graphs` Ordner das Projekt kompiliert und ausgeführt werden. 
 Alternativ kann auch mit `cargo build --release` ein Binary erstellt werden und dann mit
-`./target/release/erdosrenyimodel [ARGS]` aufgerufen werden.
+`./target/release/task_graphs [ARGS]` aufgerufen werden.
 
-Zum Generieren der svg Outputdatei wird [graphviz](https://graphviz.org/) verwendet und sollte daher zuvor installiert werden (getestet mit graphviz Version 12.2.1 und Version 13.0.0). 
+Zum Generieren der svg Outputdatei wird [graphviz](https://graphviz.org/) verwendet und sollte daher zuvor installiert werden (getestet mit graphviz Version 12.0.0 bis Version 13.1.2). 
 
 Falls drs benutzt wird, sollte außerdem das [drs python Modul](https://pypi.org/project/drs/) installiert und aufrufbar sein.
 
 Es stehen verschiedene Optionen für [ARGS] zur Verfügung:
 
 ```
-The erdosrenyimodel tool generates a random task graph using one of two variants of the Erdős–Rényi model:
+The task_graphs tool generates a random task graph using one of two variants of the Erdős–Rényi model:
     G(n, p) – a graph with n nodes where each edge is included with independent probability p.
     G(n, m) – a graph with n nodes and m edges chosen uniformly at random.
 For more information on the Erdős–Rényi model, see also https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model
 
-Usage: erdosrenyimodel [OPTIONS] --nodes <NODES>
+Usage: task_graphs [OPTIONS] --nodes <NODES>
 
 Options:
   -n, --nodes <NODES>                Number of nodes
@@ -35,4 +35,4 @@ Options:
   -h, --help                         Print help
 ```
 
-Zuletzt kann man eine Html Dokumentation für das Projekt mit `cargo doc --open` generieren und unter dem Link öffnen.
+Zuletzt kann man eine Html Dokumentation für das Projekt mit `cargo doc --open` generieren.
