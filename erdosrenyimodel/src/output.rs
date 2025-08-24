@@ -34,7 +34,7 @@ impl Graph {
             file,
             "label = <<br/>
                         <b>Task Parameter</b> <br/>
-                        Computation time C<sub>i</sub> is set to random non negative value<br/>
+                        Computation time C<sub>i</sub> <br/>
                         Arrival/Release time a<sub>i</sub> is set to 0 for all i <br/>
                         Absolute Deadline d<sub>i</sub> <br/>
                         Relative Deadline D<sub>i</sub> = d<sub>i</sub> - a<sub>i</sub> = d<sub>i</sub> <br/>

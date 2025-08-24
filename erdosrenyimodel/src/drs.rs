@@ -26,10 +26,6 @@ impl Graph {
                 n == upper.len() as i32,
                 "[ERROR] The length of upper bound sequence should be equal to the number of nodes"
             );
-            assert!(
-                u <= upper.iter().sum::<f64>().abs(),
-                "[ERROR] The sum of the upper bound values should not be less than the required total utilization"
-            );
             upper.clone()
         } else {
             println!("Generating default upper bounds that ensure the task can be executed before its deadline");
@@ -42,10 +38,6 @@ impl Graph {
             assert!(
                 n == lower.len() as i32,
                 "[ERROR] The length of lower bound sequence should be equal to the number of nodes"
-            );
-            assert!(
-                u >= lower.iter().sum::<f64>().abs(),
-                "[ERROR] The sum of the lower bound values should not be greater than the required total utilization"
             );
             lower.clone()
         } else {
@@ -62,6 +54,16 @@ impl Graph {
             "Lower bounds: {:?} \nUpper bounds: {:?}",
             lower, upper
         );
+
+        assert!(
+                u >= lower.iter().sum::<f64>().abs(),
+                "[ERROR] The sum of the lower bound values should not be greater than the required total utilization"
+            );
+
+        assert!(
+                u <= upper.iter().sum::<f64>().abs(),
+                "[ERROR] The sum of the upper bound values should not be less than the required total utilization"
+            );
 
         for i in 0..n {
             assert!(lower[i as usize] <= upper[i as usize],"[ERROR] The lower bound for each node should not be greater than the upper bound!");
