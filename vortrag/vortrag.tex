@@ -317,7 +317,8 @@
 	 	%\end{columns}
 \end{frame}
 
-\begin{frame}  {Beispiel Graphgenerierung und Parametervergabe}
+\subsection{Beispiel Graphgenerierung und Parametervergabe}
+\begin{frame}  {\subsecname}
 	\begin{columns}
 		\begin{column} {0.5\textwidth}
 			\begin{flushright}
@@ -343,26 +344,32 @@
 	\begin{itemize}
 		\item Weitere Anforderung: \\
 		      Berücksichtigung der Auslastung von Tasks
+		     \onslide<2-> {
 		\item Utilization für Task i definiert als $U_i = \frac{C_i} { T_i }$
 		      \begin{itemize}
 			      \item dabei $T_i$ Periode, d.h. fester Zeitabstand, in welchem die Task i wiederholt ausgeführt werden soll
 		      \end{itemize}
+		    }
+		    \onslide<3-> {
 		\item Gesamtauslastung des Prozessors $U = \sum_{i = 1}^{n} U_i = \sum_{i = 1}^{n} \frac{C_i}{T_i}$
 		      \begin{itemize}
 			      \item \glqq Wie viel Prozessorzeit pro Zeiteinheit benötigen alle Tasks zusammen?\grqq
 			      \item Wenn $U > 1 $: Prozessor ist überlastet und Tasks sind nicht schedulable/echtzeitfähig
 		      \end{itemize}
+		    }
+		    \onslide<4-> {
 		\item Im Programm kann zwischen UUnifast und Drs Algorithmus gewählt werden
 		      \begin{itemize}
-			      \item Parameter $U$ wird mitgegeben und daraus ein Vektor $U_1,U_2, ...,U_n$ berechnet
+			      \item Input: Knotenanzahl $n$ und Gesamtauslastung $U$
+			      \item Output: Vektor $U_1,U_2, ...,U_n$ 
 			      \item Die entsprechenden Werte werden für jede Task i angepasst, damit das Verhältnis mit $U_i$ übereinstimmt
 		      \end{itemize}
+		    }
 	\end{itemize}
 \end{frame}
-\begin{frame}[fragile]{\subsubsecname \ - Allgemein}
+\begin{frame}[fragile]{\subsecname ~mit \subsubsecname}
 	\begin{itemize}
 		\item ermöglicht Uniforme Verteilung der Gesamtauslastung U in O(n) Komplexität 
-		\item Input: Knotenanzahl n, Gesamtauslastung U
 		\item Funktionsweise: \\
 	\end{itemize}
 	\begin{center}
@@ -469,16 +476,22 @@ Es kann durch bestimmte Inputs unmöglich sein, alle Constraints zu erfüllen!
 		\item Verbesserung durch DRS Algorithmus
 		\item Erlaubt zusätzliche Vektoren für untere und obere Schranken
 		\item Verwendet iteratives Rescaling solange Elemente außerhalb liegen
+		\onslide<2->{
 		\item Setze für jedes $U_i$ mit $i \in \{1,..,n\}$: \\
 		\begin{itemize}
 			\item Lower bound $lb_i = \frac{10}{d_i}\ $
 			\item Upper bound $ub_i = \frac{C_i}{d_i}\  $ (falls vorher Parametervergabe)  
 		\end{itemize}
+	}
+	\onslide<3->{
 		\item Prüfe vorher, ob $U \geq \sum_{i = 1}^{n} lb_i$ bzw. $U \leq \sum_{i = 1}^{n} ub_i$ und $lb_i \leq ub_i $ (Nutzereingaben möglich)
+	}
+	\onslide<4->{
 		\item Ergebnis: erzeugte Task Graphen erfüllen Constraints \ding{51}
+	}
 	\end{itemize}
 \end{frame}
-\subsection{Ergebnisse und Beispiele}
+\subsection{Beispiel Graphgenerierung mit DRS Utilization}
 \begin{frame} {\subsecname}
 	\begin{columns}
 		\begin{column} {0.45\textwidth}
