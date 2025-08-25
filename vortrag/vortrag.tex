@@ -64,7 +64,7 @@
 		\end{column}
 
 		\begin{column}{0.3\textwidth}
-			
+
 			\onslide<1-> {
 				\includegraphics[width=0.33\linewidth]{images/slide2/undirected/graphcircle.png}
 				\vspace*{0.1em}
@@ -135,15 +135,15 @@
 	\begin{itemize}
 		\item[1.]<2-> Füge gerichtete, statt ungerichtete Kanten ein
 		\item[2.]<3-> Prüfe beim Hinzufügen einer neuen Kante $e=(i,j) $, ob $(i,j)$ oder $(j,i)$ bereits existiert
-		\begin{itemize}
-			\item Falls ja darf e nicht eingefügt werden
-		\end{itemize}
+		      \begin{itemize}
+			      \item Falls ja darf e nicht eingefügt werden
+		      \end{itemize}
 		\item[3.]<4-> Prüfe, ob es bereits Pfad $j $ nach $i$ gibt mittels rekursiven Tiefensuche
-		\onslide<5->{
-		\begin{itemize}
-			\item Falls ja darf e nicht eingefügt werden
-		\end{itemize}
-	}
+		      \onslide<5->{
+			      \begin{itemize}
+				      \item Falls ja darf e nicht eingefügt werden
+			      \end{itemize}
+		      }
 		      \onslide<6-> {
 		\item Graph ist Directed und Acyclic \ding{51}
 		      }
@@ -220,62 +220,62 @@
 
 \subsection{Uniprocessor Scheduling}
 \begin{frame} {\subsecname}
-	
+
 	\begin{columns}
-		
+
 		\begin{column} {0.6\textwidth}
-	Ziel: Ausführungsreihenfolge finden
-	\begin{itemize}
-		\item Berücksichtige dabei Abhängigkeiten 
-		\onslide<2-> {
-		\item Generiere zu Beginn Hash Map
-		      \begin{itemize}
-			      \item Keys: Knoten bzw. Task
-			      \item Values: Jeweils eine Liste aller Vorgänger
-		      \end{itemize}
-		    }
-		    \onslide<3->{
-		\item Füge iterativ bereitstehende Tasks mit der höchsten Priorität in den Schedule ein
-		      \begin{itemize}
-			      \item Task ist bereit/ready, falls voher keine abhängigen Tasks mehr ausgeführt werden müssen
-		      \end{itemize}
-		    }
-	\end{itemize}
-	
-	\end{column}
-	\begin{column} {0.2\textwidth}
-		\centering
-		\vspace{2mm}
-		\includegraphics [width=1\columnwidth] {images/slide6/dependencies.png}
-		\BlankLine
-		\scriptsize
-		Task i muss vor Task j ausgeführt werden
-		\vspace{5mm}
-		\BlankLine
-		\onslide<2-> {
-		\begin{tabular}{ | c | c | }
-			
-			\hline
-			Key & Value \\
-			\hline
-			i & \\
-			j & i \\
-			\textcolor{gray}{k} & i, j \\
-			\textcolor{gray}{l} & i\\
-			\hline
-		\end{tabular}
-		\BlankLine
-		\scriptsize
-		Predecessor Hash Map zu Graph oben
-	}
-	\end{column}
+			Ziel: Ausführungsreihenfolge finden
+			\begin{itemize}
+				\item Berücksichtige dabei Abhängigkeiten
+				      \onslide<2-> {
+				\item Generiere zu Beginn Hash Map
+				      \begin{itemize}
+					      \item Keys: Knoten bzw. Task
+					      \item Values: Jeweils eine Liste aller Vorgänger
+				      \end{itemize}
+				      }
+				      \onslide<3->{
+				\item Füge iterativ bereitstehende Tasks mit der höchsten Priorität in den Schedule ein
+				      \begin{itemize}
+					      \item Task ist bereit/ready, falls voher keine abhängigen Tasks mehr ausgeführt werden müssen
+				      \end{itemize}
+				      }
+			\end{itemize}
+
+		\end{column}
+		\begin{column} {0.2\textwidth}
+			\centering
+			\vspace{2mm}
+			\includegraphics [width=1\columnwidth] {images/slide6/dependencies.png}
+			\BlankLine
+			\scriptsize
+			Task i muss vor Task j ausgeführt werden
+			\vspace{5mm}
+			\BlankLine
+			\onslide<2-> {
+				\begin{tabular}{ | c | c | }
+
+					\hline
+					Key                 & Value \\
+					\hline
+					i                   &       \\
+					j                   & i     \\
+					\textcolor{gray}{k} & i, j  \\
+					\textcolor{gray}{l} & i     \\
+					\hline
+				\end{tabular}
+				\BlankLine
+				\scriptsize
+				Predecessor Hash Map zu Graph oben
+			}
+		\end{column}
 	\end{columns}
 \end{frame}
 \begin{frame} [fragile]{Pseudocode für \subsecname}
-%	\begin{columns}
+	%	\begin{columns}
 	%	\begin{column}{0.68\linewidth}
-		\vspace*{-1mm}
-		\begin{center}
+	\vspace*{-1mm}
+	\begin{center}
 		\fbox{%
 			\begin{minipage}{0.8\linewidth}
 				\begin{algorithm}[H]
@@ -309,12 +309,12 @@
 					}
 				\end{algorithm}
 			\end{minipage}}
-			\end{center}
-%	\end{column}
+	\end{center}
+	%	\end{column}
 	% \begin{column}{0.2\linewidth}
-	 %	\includegraphics [width=1\columnwidth] {images/slide7/schedule.png}
-	 	%\end{column}
-	 	%\end{columns}
+	%	\includegraphics [width=1\columnwidth] {images/slide7/schedule.png}
+	%\end{column}
+	%\end{columns}
 \end{frame}
 
 \subsection{Beispiel Graphgenerierung und Parametervergabe}
@@ -344,61 +344,61 @@
 	\begin{itemize}
 		\item Weitere Anforderung: \\
 		      Berücksichtigung der Auslastung von Tasks
-		     \onslide<2-> {
+		      \onslide<2-> {
 		\item Utilization für Task i definiert als $U_i = \frac{C_i} { T_i }$
 		      \begin{itemize}
 			      \item dabei $T_i$ Periode, d.h. fester Zeitabstand, in welchem die Task i wiederholt ausgeführt werden soll
 		      \end{itemize}
-		    }
-		    \onslide<3-> {
+		      }
+		      \onslide<3-> {
 		\item Gesamtauslastung des Prozessors $U = \sum_{i = 1}^{n} U_i = \sum_{i = 1}^{n} \frac{C_i}{T_i}$
 		      \begin{itemize}
 			      \item \glqq Wie viel Prozessorzeit pro Zeiteinheit benötigen alle Tasks zusammen?\grqq
 			      \item Wenn $U > 1 $: Prozessor ist überlastet und Tasks sind nicht schedulable/echtzeitfähig
 		      \end{itemize}
-		    }
-		    \onslide<4-> {
+		      }
+		      \onslide<4-> {
 		\item Im Programm kann zwischen UUnifast und Drs Algorithmus gewählt werden
 		      \begin{itemize}
 			      \item Input: Knotenanzahl $n$ und Gesamtauslastung $U$
-			      \item Output: Vektor $U_1,U_2, ...,U_n$ 
+			      \item Output: Vektor $U_1,U_2, ...,U_n$
 			      \item Die entsprechenden Werte werden für jede Task i angepasst, damit das Verhältnis mit $U_i$ übereinstimmt
 		      \end{itemize}
-		    }
+		      }
 	\end{itemize}
 \end{frame}
 \begin{frame}[fragile]{\subsecname ~mit \subsubsecname}
 	\begin{itemize}
-		\item ermöglicht Uniforme Verteilung der Gesamtauslastung U in O(n) Komplexität 
+		\item ermöglicht Uniforme Verteilung der Gesamtauslastung U in O(n) Komplexität
 		\item Funktionsweise: \\
 	\end{itemize}
 	\begin{center}
-			\begin{minipage}{0.5\linewidth}
-				\begin{tcolorbox}
-			\begin{algorithm}[H]
-				\SetAlgoLined
-				\footnotesize
-				$sum\_u \gets U$ \\
-				\ForAll {$i \in \{1,..,n - 1\}$} {
-					$next\_sum\_u \gets sum\_u \cdot rand^{\frac{1}{n - i}}$ \\
-					$U\_i \gets sum\_u - next\_sum\_u $ \\
-					$sum\_u \gets next\_sum\_u $ 
-				}
-				$U\_n \gets sum\_u$
-			\end{algorithm}
-		\end{tcolorbox}
+		\begin{minipage}{0.5\linewidth}
+			\begin{tcolorbox}
+				\begin{algorithm}[H]
+					\SetAlgoLined
+					\footnotesize
+					$sum\_u \gets U$ \\
+					\ForAll {$i \in \{1,..,n - 1\}$} {
+						$next\_sum\_u \gets sum\_u \cdot rand^{\frac{1}{n - i}}$ \\
+						$U\_i \gets sum\_u - next\_sum\_u $ \\
+						$sum\_u \gets next\_sum\_u $
+					}
+					$U\_n \gets sum\_u$
+				\end{algorithm}
+			\end{tcolorbox}
 		\end{minipage}
-\end{center}
-\BlankLine
-\begin{itemize}
-	\item Weiterführende Details dazu u.a. in 
+	\end{center}
+	\BlankLine
 	\begin{itemize}
-		\item 'Biasing Effects in Schedulability Measures' \
-		von Bini, Buttazzom, Seite 6f.
-		\item 'Techniques For The Synthesis Of Multiprocessor Tasksets'\
-		von Emberson, Stafford, Davis
+		\item Weiterführende Details dazu u.a. in
+		      \begin{itemize}
+			      \item 'Biasing Effects in Schedulability Measures' \
+			            von Bini, Buttazzom, Seite 6f.
+			      \item 'Techniques For The Synthesis Of Multiprocessor Tasksets'\
+			            von Emberson, Stafford, Davis
+		      \end{itemize}
 	\end{itemize}
-\end{itemize}
 \end{frame}
 \begin{frame} [fragile]{\subsecname ~mit \subsubsecname}
 	\begin{lstlisting} [language=Rust, style=colouredRust,xleftmargin=15pt, frame=single]
@@ -434,39 +434,39 @@ fn uunifast(&self, u: f64) -> Vec<f64> {
 	\begin{columns}[T] % T = top aligned
 		\begin{column}{0.45\textwidth}
 			\begin{tcolorbox}
-			$C_i  \in \{10..100\} $
+				$C_i  \in \{10..100\} $
 			\end{tcolorbox}
 		\end{column}
 		\begin{column}{0.45\textwidth}
 			\begin{tcolorbox}
-			$d_i \ge C_i + s_i $
+				$d_i \ge C_i + s_i $
 			\end{tcolorbox}
 		\end{column}
 	\end{columns}
-	
+
 	% --- untere Hälfte ---
 	\begin{columns}[T]
 		\begin{column}{0.45\textwidth}
 			\begin{tcolorbox}
-			$s_i \ge d_{i-1}, $ wobei $s_1 = 0$ \\
-			Der Einfachheit halber $s_i = d_{i-1}$ 
+				$s_i \ge d_{i-1}, $ wobei $s_1 = 0$ \\
+				Der Einfachheit halber $s_i = d_{i-1}$
 			\end{tcolorbox}
 		\end{column}
 		\begin{column}{0.45\textwidth}
 			\begin{tcolorbox}
 				$U_i =  \frac{C_i}{T_i}$ \\
-				Der Einfachheit halber $T_i = d_i$ 
+				Der Einfachheit halber $T_i = d_i$
 			\end{tcolorbox}
 		\end{column}
 	\end{columns}
 	\vspace{5mm}
-\onslide<2-> {
-Es kann durch bestimmte Inputs unmöglich sein, alle Constraints zu erfüllen!
-\begin{itemize}
-	\item z.B. Wenn $C_i$ neu gesetzt wird: kleines $U_i $ $\rightarrow$ kleines $C_i$ $\rightarrow$ kann $C_i \ge 10$ verletzen
-	\item z.B. Wenn $d_i$ neu gesetzt wird: großes $U_i$ $\rightarrow$ kleines $d_i$ $\rightarrow$ kann $< C_i + s_i$ sein
-\end{itemize}
-}
+	\onslide<2-> {
+		Es kann durch bestimmte Inputs unmöglich sein, alle Constraints zu erfüllen!
+		\begin{itemize}
+			\item z.B. Wenn $C_i$ neu gesetzt wird: kleines $U_i $ $\rightarrow$ kleines $C_i$ $\rightarrow$ kann $C_i \ge 10$ verletzen
+			\item z.B. Wenn $d_i$ neu gesetzt wird: großes $U_i$ $\rightarrow$ kleines $d_i$ $\rightarrow$ kann $< C_i + s_i$ sein
+		\end{itemize}
+	}
 \end{frame}
 
 
@@ -476,19 +476,19 @@ Es kann durch bestimmte Inputs unmöglich sein, alle Constraints zu erfüllen!
 		\item Verbesserung durch DRS Algorithmus
 		\item Erlaubt zusätzliche Vektoren für untere und obere Schranken
 		\item Verwendet iteratives Rescaling solange Elemente außerhalb liegen
-		\onslide<2->{
+		      \onslide<2->{
 		\item Setze für jedes $U_i$ mit $i \in \{1,..,n\}$: \\
-		\begin{itemize}
-			\item Lower bound $lb_i = \frac{10}{d_i}\ $
-			\item Upper bound $ub_i = \frac{C_i}{d_i}\  $ (falls vorher Parametervergabe)  
-		\end{itemize}
-	}
-	\onslide<3->{
+		      \begin{itemize}
+			      \item Lower bound $lb_i = \frac{10}{d_i}\ $
+			      \item Upper bound $ub_i = \frac{C_i}{d_i}\  $ (falls vorher Parametervergabe)
+		      \end{itemize}
+		      }
+		      \onslide<3->{
 		\item Prüfe vorher, ob $U \geq \sum_{i = 1}^{n} lb_i$ bzw. $U \leq \sum_{i = 1}^{n} ub_i$ und $lb_i \leq ub_i $ (Nutzereingaben möglich)
-	}
-	\onslide<4->{
+		      }
+		      \onslide<4->{
 		\item Ergebnis: erzeugte Task Graphen erfüllen Constraints \ding{51}
-	}
+		      }
 	\end{itemize}
 \end{frame}
 \subsection{Beispiel Graphgenerierung mit DRS Utilization}
@@ -501,31 +501,31 @@ Es kann durch bestimmte Inputs unmöglich sein, alle Constraints zu erfüllen!
 		\end{column}
 		\begin{column}{0.65\textwidth}
 			\begin{flushleft}
-			\begin{itemize}
-				%cargo run -- --nodes 5 --edges 6 --option 2 --drs 1 --csv output.csv
-				\item Beispielhafter Output des Programms bei Aufruf mit Parametern \textit{--nodes 5 --edges 6 \textbf{--drs 1} \\--csv parameter.csv} und Auswahl des G(n,m) Erdős–Rényi Modell
-			\end{itemize}
-			\vspace{10mm}
-			%\includegraphics [width=0.4\columnwidth] {images/slide14/parameter_part.png}
-			\hspace{-10mm}
-			\scalebox{0.8}{
-				\begin{tabular}{ | c | c | c | c | c | c | c | c | c | c | }
-				
-				\hline
-				$i$ & $s_i$ & $C_i$ & $d_i$ & $D_i$ & $f_i$ & $R_i$ & $L_i$ & $a_i$ & $U_i$ \\
-				\hline
-				0 & 0 & 17 & 57 & 57 & 17 & 17 & -40 & 0 & 0.298245614035088 \\
-				1 & 87 & 14 & 112 & 112 & 101 & 101 & -11 & 0 & 0.125 \\
-				2 & 112 & 27 & 151 & 151 & 139 & 139 & -12 & 0 & 0.178807947019868 \\
-				3 & 151 & 16 & 171 & 171 & 167 & 167 & -4 & 0 & 0.0935672514619883 \\
-				4 & 57 & 26 & 87 & 87 & 83 & 83 & -4 & 0 & 0.298850574712644 \\
-				\hline
-			\end{tabular}
-		}
-		\end{flushleft}
-		\hspace{38mm}
-		\scriptsize
-		Optionales Parameter File aller Tasks
+				\begin{itemize}
+					%cargo run -- --nodes 5 --edges 6 --option 2 --drs 1 --csv output.csv
+					\item Beispielhafter Output des Programms bei Aufruf mit Parametern \textit{--nodes 5 --edges 6 \textbf{--drs 1} \\--csv parameter.csv} und Auswahl des G(n,m) Erdős–Rényi Modell
+				\end{itemize}
+				\vspace{10mm}
+				%\includegraphics [width=0.4\columnwidth] {images/slide14/parameter_part.png}
+				\hspace{-10mm}
+				\scalebox{0.8}{
+					\begin{tabular}{ | c | c | c | c | c | c | c | c | c | c | }
+
+						\hline
+						$i$ & $s_i$ & $C_i$ & $d_i$ & $D_i$ & $f_i$ & $R_i$ & $L_i$ & $a_i$ & $U_i$              \\
+						\hline
+						0   & 0     & 17    & 57    & 57    & 17    & 17    & -40   & 0     & 0.298245614035088  \\
+						1   & 87    & 14    & 112   & 112   & 101   & 101   & -11   & 0     & 0.125              \\
+						2   & 112   & 27    & 151   & 151   & 139   & 139   & -12   & 0     & 0.178807947019868  \\
+						3   & 151   & 16    & 171   & 171   & 167   & 167   & -4    & 0     & 0.0935672514619883 \\
+						4   & 57    & 26    & 87    & 87    & 83    & 83    & -4    & 0     & 0.298850574712644  \\
+						\hline
+					\end{tabular}
+				}
+			\end{flushleft}
+			\hspace{38mm}
+			\scriptsize
+			Optionales Parameter File aller Tasks
 		\end{column}
 	\end{columns}
 \end{frame}
