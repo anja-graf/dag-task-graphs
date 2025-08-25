@@ -29,6 +29,9 @@
 
 \mode<presentation>
 
+\newcommand{\source}[1]{\gdef\insertSource{#1}}
+\newcommand{\insertSource}{} % Standard: leer
+
 \defbeamertemplate*{title page}{fai theme}{
     \vspace{-4cm}
     \ifx\aspect\aspectft
@@ -165,14 +168,21 @@
     \begin{minipage}[c][0.6cm][c]{9cm}
         \vfill
         \mbox{\insertshortdate}
-        \hspace{0.5cm}
+        \hspace{0.3cm}
         \ifx\beamer@shortauthor\empty
         \mbox{\insertshorttitle}
         \else
-        \mbox{\insertshortauthor~-- \insertshorttitle}
+        \mbox{\insertshortauthor~-- \insertshorttitle  }
         \fi
-        \hfill
     \end{minipage}
+    \hspace{-4.5cm}
+  	\begin{minipage}[c][0.6cm][c]{8.8cm}
+  		\vfill
+  		\ifx\insertSource\relax 
+  		\else
+  		{\tiny \insertSource}
+  		\fi
+  	\end{minipage}
     \hfill
     \begin{minipage}[c][0.6cm][c]{0.5cm}
         \vfill

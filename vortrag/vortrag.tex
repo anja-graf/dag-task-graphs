@@ -127,7 +127,11 @@
 	\onslide<4->{
 		Insgesamt sind beide Varianten noch ungerichtet und prüfen nicht auf Kreisfreiheit!
 	}
+	\tiny 
+	\source{https://www.geeksforgeeks.org/dsa/erdos-renyl-model-generating-random-graphs/ \\
+	https://en.wikipedia.org/wiki/Erd\%C5\%91s\%E2\%80\%93R\%C3\%A9nyi\_model\#cite\_ref-5}
 \end{frame}
+\source{}
 \begin{frame} {\subsecname}
 	\begin {columns}
 	\begin {column}{0.6\textwidth}
@@ -215,8 +219,9 @@
 			\end{columns}
 		\end{itemize}
 	\end{center}
+	\source{Quelle: Echtzeitsysteme Scheduling Vorlesung 02, Folie 05}
 \end{frame}
-
+\source{}
 
 \subsection{Uniprocessor Scheduling}
 \begin{frame} {\subsecname}
@@ -348,6 +353,7 @@
 		\item Utilization für Task i definiert als $U_i = \frac{C_i} { T_i }$
 		      \begin{itemize}
 			      \item dabei $T_i$ Periode, d.h. fester Zeitabstand, in welchem die Task i wiederholt ausgeführt werden soll
+			      \item für Taskgraphen setze $T_i = d_i$
 		      \end{itemize}
 		      }
 		      \onslide<3-> {
@@ -366,7 +372,9 @@
 		      \end{itemize}
 		      }
 	\end{itemize}
+	\source{Quelle: Echtzeitsysteme Periodic Scheduling Vorlesung 04 - Introduction, Folie 07}
 \end{frame}
+\source{}
 \begin{frame}[fragile]{\subsecname ~mit \subsubsecname}
 	\begin{itemize}
 		\item ermöglicht Uniforme Verteilung der Gesamtauslastung U in O(n) Komplexität
@@ -393,39 +401,14 @@
 	\begin{itemize}
 		\item Weiterführende Details dazu u.a. in
 		      \begin{itemize}
-			      \item 'Biasing Effects in Schedulability Measures' \
-			            von Bini, Buttazzom, Seite 6f.
-			      \item 'Techniques For The Synthesis Of Multiprocessor Tasksets'\
-			            von Emberson, Stafford, Davis
+			      \item 'Biasing Effects in Schedulability Measures'\ von Bini, Buttazzom, Seite 6f.
+			      \item 'Techniques For The Synthesis Of Multiprocessor Tasksets'\ von Emberson, Stafford, Davis
 		      \end{itemize}
 	\end{itemize}
-\end{frame}
-\begin{frame} [fragile]{\subsecname ~mit \subsubsecname}
-	\begin{lstlisting} [language=Rust, style=colouredRust,xleftmargin=15pt, frame=single]
-fn uunifast(&self, u: f64) -> Vec<f64> {
-	assert!(u <= 1.0 && u >= 0.0, 
-	  "The processor utilization should be value between 0 and 1");
-	let mut sum_u = u;
-	let mut rng = rand::thread_rng();
-	let mut vect_u: Vec<f64> = Vec::new();
-	for i in 0..self.nodes.len() - 1 {
-		let next_sum_u = sum_u * rng.r#gen::<f64>()
-			.powf(1.0 / (self.nodes.len() - i) as f64);
-		vect_u.push(sum_u - next_sum_u);
-		sum_u = next_sum_u;
-	}
-	vect_u.push(sum_u);
-	assert!(u - vect_u.iter().sum::<f64>().abs() < 1e-6);
-	vect_u
-}\end{lstlisting}
-	\vspace*{-0.3em}
-	\hfill % schiebt den Text nach rechts
-	\parbox{0.5\linewidth}{ % Breite der Box (hier halbe Textbreite)
-		\raggedleft % Text rechtsbündig innerhalb der Box
-		\scriptsize % kleine Schrift
-		In uunifast.rs, ab Zeile 17
+	\source{https://ieeexplore.ieee.org/abstract/document/1311021 \\ https://www.cs.york.ac.uk/rts/static/papers/R:Emberson:2010a.pdf
 	}
 \end{frame}
+\source{}
 
 \begin{frame} {\subsecname ~mit \subsubsecname}
 	Constraints für generierte Graphen  \\
@@ -490,7 +473,9 @@ fn uunifast(&self, u: f64) -> Vec<f64> {
 		\item Ergebnis: erzeugte Task Graphen erfüllen Constraints \ding{51}
 		      }
 	\end{itemize}
+	\source{Quelle des verwendeten Moduls: https://pypi.org/project/drs/}
 \end{frame}
+\source{}
 \subsection{Beispiel Graphgenerierung mit DRS Utilization}
 \begin{frame} {\subsecname}
 	\begin{columns}
@@ -530,6 +515,17 @@ fn uunifast(&self, u: f64) -> Vec<f64> {
 	\end{columns}
 \end{frame}
 
+\section{Zusammenfassung}
+\begin{frame} {\secname}
+	\begin{itemize}
+		\item Generierung von Task Graphen mit zufälliger DAG Struktur
+		\item Unterstützung des $G(n,p)$ sowie $G(n,m)$ Erdős–Rényi Modells
+		\item Erweiterung um Task Parameter ($s_i, C_i, d_i, D_i, f_i, R_i, L_i, a_i$)
+		\item Uniprocessor Scheduling nach Abhängigkeiten und Prioritäten
+		\item UUnifast und DRS Algorithmus für Utilization
+		\item Ergebnis: Schedulable Task Graphen \ding{51}
+	\end{itemize}
+\end{frame}
 
 \end{document}
 
