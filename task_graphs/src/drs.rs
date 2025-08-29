@@ -1,23 +1,24 @@
-use crate::graph::Graph;
 use std::process::Command;
 
 use std::fs;
 use std::collections::HashMap;
 
-impl Graph {
-    /// Distributes total processor utilization among the nodes of the graph
-    /// by assigning new computation times, optionally constrained by lower and upper bounds
-    pub fn distribute_drs(
-        &mut self,
-        n: i32,
+pub struct DRS;
+
+impl DRS {
+    /// Generates total processor utilization among the nodes of the graph
+    /// optionally constrained by lower and upper bounds
+    pub fn call_drs(n: i32,
         u: f64,
         lower_bounds: Option<Vec<f64>>,
-        upper_bounds: Option<Vec<f64>>,
-    ) {
+        upper_bounds: Option<Vec<f64>>,all_periods: Vec<i32> ,node_distribution: &Vec<i32>) -> Vec<f64> {
+        
+        println!("\n\nDistributing total processor utilization U = {} with drs",u);
         assert!(
             u <= 1.0 && u >= 0.0,
             "The processor utilization should be value between 0 and 1"
         );
+
 
         // Assert minimal requirements for useful upper and lower bounds if they are given
         // else set default values that help to generate feasible utilization
@@ -28,11 +29,12 @@ impl Graph {
             );
             upper.clone()
         } else {
-            println!("Generating default upper bounds that ensure the task can be executed before its deadline");
-            self.nodes
-                .iter()
-                .map(|node| node.computation_time as f64 / node.rel_deadline as f64)
-                .collect()
+            println!("Generating default upper bounds that ensure the task has an execution time of at least 100");
+            let mut default = Vec::new();
+            for (i, &t_i) in all_periods.iter().enumerate() {
+                default.extend(vec![100.0 / t_i as f64; node_distribution[i] as usize]);
+            }
+            default
         };
         let lower: Vec<f64> = if let Some(ref lower) = lower_bounds {
             assert!(
@@ -42,12 +44,11 @@ impl Graph {
             lower.clone()
         } else {
             println!("Generating default lower bounds that ensure the task has an execution time of at least 10");
-            // vec![0.0; n as usize]
-            // ensure that computation time is >= 10
-            self.nodes
-                .iter()
-                .map(|node| 10.0 / node.rel_deadline as f64)
-                .collect()
+            let mut default = Vec::new();
+            for (i, &t_i) in all_periods.iter().enumerate() {
+                default.extend(vec![10.0 / t_i as f64; node_distribution[i] as usize]);
+            }
+            default
         };
 
         println!(
@@ -71,16 +72,13 @@ impl Graph {
 
 
         // Call python script to compute utilization distribution
-        let utilization: Vec<f64> = Self::call_python_drs(n, u, lower, upper);
-        assert!(utilization.len() == self.nodes.len());
-
-        // Distribute the computed utilization to the nodes
-        self.distribute_parameters(&utilization);
+        DRS::drs(n,u,lower, upper)
     }
+
 
     /// Internal helper that invokes a python script to compute the utilization distribution 
     /// using the DRS algorithm
-    fn call_python_drs(n: i32, u: f64, lower_bounds: Vec<f64>, upper_bounds: Vec<f64>) -> Vec<f64> {
+    fn drs(n: i32, u: f64, lower_bounds: Vec<f64>, upper_bounds: Vec<f64>) -> Vec<f64> {
         // call drs algorithm https://pypi.org/project/drs/
         // informative IEEE paper https://ieeexplore.ieee.org/abstract/document/1311021
         let python_code = format!(
