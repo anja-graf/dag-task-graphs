@@ -33,6 +33,9 @@ pub struct Args {
     #[arg(short, long, help = "Path for parameter output file in csv format [default: Not generated]")]
     pub csv: Option<String>,
 
+    #[arg(short='g', long, default_value = "1", help = "Number of graphs")]
+    pub graphs: i32,
+
     #[arg(short='t', long="uunifast", value_name="UTILIZATION", help = "Total processor utilization for uunifast [default: Not used]")]
     pub uunifast_utilization: Option<f64>,
 

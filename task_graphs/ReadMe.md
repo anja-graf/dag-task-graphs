@@ -26,6 +26,7 @@ Options:
   -s, --svg <SVG>                    Path for output file in svg format [default: graph.svg]
   -P, --png <PNG>                    Path for output file in png format [default: graph.png]
   -c, --csv <CSV>                    Path for parameter output file in csv format [default: Not generated]
+  -g, --graphs <GRAPHS>              Number of graphs [default: 1]
   -t, --uunifast <UTILIZATION>       Total processor utilization for uunifast [default: Not used]
   -T, --drs <UTILIZATION>            Total processor utilization for drs [default: Not used]
   -U, --upper-bounds <U1,U2,...,UN>  Sequence with upper bounds for each node [default: Not used]
