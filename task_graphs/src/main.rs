@@ -29,84 +29,37 @@ fn main() -> Result<()> {
     assert!(args.graphs >= 1, "There should be at least one graph!");
     assert!(!(args.option == 1 && args.option == 2), "There is only option 1 or 2");
 
+    // Generate random node and edge distribution of given inputs for multiple graphs
     let node_distribution:Vec<i32> = generate_random_node_distribution(args.graphs, args.nodes);
     let mut edge_distribution:Vec<i32> = Vec::new();
-    if args.option == 2 {
+    if args.option == 2 { // Only this variant of erdos renyi takes a number of edges
         edge_distribution = generate_random_edge_distribution(&node_distribution,args.edges);
     }
     
-    let mut all_graphs:Vec<Graph> = Vec::new();
-    let mut all_periods: Vec<i32> = Vec::new();
+    let mut all_graphs: Vec<Graph> = Vec::new(); // Here all graphs are stored, so length is equal to args.graphs
+    let mut all_periods: Vec<i32> = Vec::new(); // Periods are set to the same value for each graph which is sum of all C_i
 
-    for i in 0..args.graphs {
-        // Depending on the specified option a function is used to generate the graph
-        let graph;
-        if args.option == 1 {
-            println!(
-                "The graph {} will be generated with option 1, nodes = {} and probability = {}",
-                i + 1,
-                node_distribution[i as usize],
-                args.probability
-            );
-            graph = Graph::new_erdos_renyi_var1(node_distribution[i as usize], args.probability);
-        } else if args.option == 2 {
-            println!(
-                "The graph {} will be generated with option 2, nodes = {} and edges = {}",
-                i + 1,
-                node_distribution[i as usize],
-                edge_distribution[i as usize]
-            );
-            graph = Graph::new_erdos_renyi_var2(node_distribution[i as usize], edge_distribution[i as usize]);
-        } else {
-            panic!("Error: Invalid option!");
-        }
+    // Generate DAG with variant of erdos renyi model
+    generate_random_directed_acyclic_graphs(&args,&node_distribution,&mut edge_distribution,&mut all_graphs,&mut all_periods);
 
-        if let Some(first_node) = graph.nodes.first() { // all graphs have at least one node
-            all_periods.push(first_node.period); // T_1 = T_2 = ... = T_n
-        }
-
-        all_graphs.push(graph);
-    }
-
-
-
-    // Distribute utilization by generating utilization vector and setting computation times new
-    let mut utilization:Vec<f64> = Vec::new();
-    
-
-    if let Some(u) = &args.uunifast_utilization {
-        utilization = UUnifast::call_uunifast(args.nodes,*u);
-        
-    } else if let Some(u) = &args.drs_utilization {
-        let mut lower = args.lower_bounds;
-        let mut upper = args.upper_bounds;
-        // If a drs input file is given, read it 
-        if let Some(path) = &args.drs_path {
-            (lower, upper) = DRS::read_drs_input_file(path);
-        }
-        utilization = DRS::call_drs(args.nodes, *u, lower, upper, all_periods,&node_distribution);
-    }
+    // Generate utilization vector with chosen algorithm (uunifast or drs)
+    let utilization = generate_utilization(&args,all_periods,&node_distribution);
 
     let mut offset = 0;
     for (i,graph) in all_graphs.iter_mut().enumerate() {
-            // Save resulting graph in dot file, svg file and png file and save parameters of all tasks if wanted
-        // Generating task parameters like start time or deadline
-        
-
-        //Distribute utilization
-        let mut sub_u:Vec<f64> = Vec::new();
+            
+        // Generate utilization subvector 
+        let mut sub_u:Vec<f64> = Vec::new(); // Subvector is part of utilization vector with length of nodes in graph i
         if args.uunifast_utilization.is_some() || args.drs_utilization.is_some(){
-            //sub_u = utilization[..graph.nodes.len().min(utilization.len())].to_vec();
-
             sub_u = utilization[offset..offset + node_distribution[i] as usize].to_vec();
-            offset += node_distribution[i] as usize;
-
+            offset += node_distribution[i] as usize; // Offset signals start of U_i values for current graph i
             println!("\n\nSubvector for utilization of graph {}: {:?}",i, sub_u);
-            //graph.distribute_parameters(&sub_u);
         } 
 
+        // Find execution order for all tasks in current graph i
         let schedule = graph.distribute_parameters_uniprocessor(&sub_u);
 
+        // Save resulting graph in dot file, svg file and png file and save parameters of all tasks if wanted
         let dot = format!("{}{}.dot",args.dot, i + 1);
         graph.write_dot(&dot, schedule, args.uunifast_utilization.is_some())?;
         if let Some(csv) = &args.csv {
@@ -116,7 +69,6 @@ fn main() -> Result<()> {
         let png = &format!("{}{}.png",args.png,i+1);
         Graph::dot_to_svg_png(&dot, &svg, &png)?;
         println!("Graph {} saved as '{}', '{}' and '{}'",i + 1, &dot, &svg, &png);
-
     }
 
 
@@ -160,4 +112,54 @@ fn generate_random_edge_distribution(node_distribution: &Vec<i32>, total_edges: 
     }
     println!("Edges were distributed on graphs: {:?}", distribution);
     distribution
+}
+
+fn generate_random_directed_acyclic_graphs(args:&Args,node_distribution:& Vec<i32>,edge_distribution:&mut Vec<i32>,
+    all_graphs:&mut Vec<Graph>,all_periods: &mut Vec<i32>) {
+    for i in 0..args.graphs {
+        // Depending on the specified option a function is used to generate the graph
+        let graph;
+        if args.option == 1 {
+            println!(
+                "The graph {} will be generated with option 1, nodes = {} and probability = {}",
+                i + 1,
+                node_distribution[i as usize],
+                args.probability
+            );
+            graph = Graph::new_erdos_renyi_var1(node_distribution[i as usize], args.probability);
+        } else if args.option == 2 {
+            println!(
+                "The graph {} will be generated with option 2, nodes = {} and edges = {}",
+                i + 1,
+                node_distribution[i as usize],
+                edge_distribution[i as usize]
+            );
+            graph = Graph::new_erdos_renyi_var2(node_distribution[i as usize], edge_distribution[i as usize]);
+        } else {
+            panic!("Error: Invalid option!");
+        }
+
+        if let Some(first_node) = graph.nodes.first() { // all graphs have at least one node
+            all_periods.push(first_node.period); // T_1 = T_2 = ... = T_n
+        }
+
+        all_graphs.push(graph);
+    }
+}
+
+fn generate_utilization(args:&Args,all_periods:Vec<i32>,node_distribution:&Vec<i32>) -> Vec<f64>{
+    let mut utilization:Vec<f64> = Vec::new(); // Here all task utilizations are stored, so length is equal to args.nodes
+    if let Some(u) = &args.uunifast_utilization {
+        utilization = UUnifast::call_uunifast(args.nodes,*u);
+        
+    } else if let Some(u) = &args.drs_utilization {
+        let mut lower = args.lower_bounds.clone();
+        let mut upper = args.upper_bounds.clone();
+        // If a drs input file is given, read it 
+        if let Some(path) = &args.drs_path {
+            (lower, upper) = DRS::read_drs_input_file(path);
+        }
+        utilization = DRS::call_drs(args.nodes, *u, lower, upper, all_periods,&node_distribution);
+    }
+    utilization
 }
