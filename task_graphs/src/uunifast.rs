@@ -1,20 +1,22 @@
-use crate::graph::Graph;
 use rand::Rng;
 
-impl Graph {
-    /// Calls uunifast algorithm and assigns new computation times
-    pub fn distribute_uunifast(&mut self, u: f64) {
+pub struct UUnifast;
+
+impl UUnifast {
+    /// Calls uunifast algorithm 
+    pub fn call_uunifast(n: i32, u: f64) -> Vec<f64> {
         // Slide 7 on VL04_SchedulingPeriodic
         // U_i = C_i / T_i and sum of all U_i must be <= 1 (else not schedulable)
-        let utilization: Vec<f64> = self.uunifast(u);
-        assert!(utilization.len() == self.nodes.len());
-        self.distribute_parameters(&utilization);
+        println!("\n\nDistributing total processor utilization U = {} with uunifast",u);
+        let utilization: Vec<f64> = UUnifast::uunifast(n,u);
+        assert!(utilization.len() == n as usize);
+        utilization
     }
 
     /// UuniFast algorithm like described in IEEE paper https://ieeexplore.ieee.org/abstract/document/1311021
     /// Page 6, upper right before '4. Simulation results'
     /// To efficiently generate task sets with uniform distribution and with O(n) complexity
-    fn uunifast(&self, u: f64) -> Vec<f64> {
+    fn uunifast(n: i32, u: f64) -> Vec<f64> {
         assert!(
             u <= 1.0 && u >= 0.0,
             "The processor utilization should be value between 0 and 1"
@@ -22,13 +24,13 @@ impl Graph {
         let mut sum_u = u;
         let mut rng = rand::thread_rng();
         let mut vect_u: Vec<f64> = Vec::new();
-        for i in 0..self.nodes.len() - 1 {
-            let next_sum_u = sum_u * rng.r#gen::<f64>().powf(1.0 / (self.nodes.len() - i) as f64);
+        for i in 0..n - 1 {
+            let next_sum_u = sum_u * rng.r#gen::<f64>().powf(1.0 / (n - i) as f64);
             vect_u.push(sum_u - next_sum_u);
             sum_u = next_sum_u;
         }
         vect_u.push(sum_u);
-        println!("{:?}", vect_u);
+        println!("Utilization vector {:?}\n\n", vect_u);
         assert!(u - vect_u.iter().sum::<f64>().abs() < 1e-6); // floating point arithmetic
         vect_u
     }
