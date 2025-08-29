@@ -22,9 +22,9 @@ Options:
   -n, --nodes <NODES>                Number of nodes
   -m, --edges <EDGES>                Number of edges [default: 2]
   -p, --probability <PROBABILITY>    Probability for edges [default: 0.5]
-  -d, --dot <DOT>                    Path for output file in dot format [default: graph.dot]
-  -s, --svg <SVG>                    Path for output file in svg format [default: graph.svg]
-  -P, --png <PNG>                    Path for output file in png format [default: graph.png]
+  -d, --dot <DOT>                    Path for output file in dot format [default: graph]
+  -s, --svg <SVG>                    Path for output file in svg format [default: graph]
+  -P, --png <PNG>                    Path for output file in png format [default: graph]
   -c, --csv <CSV>                    Path for parameter output file in csv format [default: Not generated]
   -g, --graphs <GRAPHS>              Number of graphs [default: 1]
   -t, --uunifast <UTILIZATION>       Total processor utilization for uunifast [default: Not used]

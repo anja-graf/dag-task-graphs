@@ -21,13 +21,13 @@ pub struct Args {
     #[arg(short, long, default_value = "0.5", help = "Probability for edges")]
     pub probability: f64,
 
-    #[arg(short, long, default_value = "graph.dot", help = "Path for output file in dot format")]
+    #[arg(short, long, default_value = "graph", help = "Path for output file in dot format")]
     pub dot: String,
 
-    #[arg(short, long, default_value = "graph.svg", help = "Path for output file in svg format")]
+    #[arg(short, long, default_value = "graph", help = "Path for output file in svg format")]
     pub svg: String,
 
-    #[arg(short='P',long, default_value = "graph.png", help = "Path for output file in png format")]
+    #[arg(short='P',long, default_value = "graph", help = "Path for output file in png format")]
     pub png: String,
 
     #[arg(short, long, help = "Path for parameter output file in csv format [default: Not generated]")]

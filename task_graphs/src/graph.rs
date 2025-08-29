@@ -24,4 +24,6 @@ pub struct Node {
     pub response_time: i32,
     // Lateness = finishing_time - abs_deadline
     pub lateness: i32,
+    // Time between executions if task is repeated
+    pub period: i32
 }

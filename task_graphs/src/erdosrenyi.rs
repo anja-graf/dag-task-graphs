@@ -14,14 +14,22 @@ impl Graph {
             nodes.push(Node {
                 name: node,
                 start_time: 0,
-                abs_deadline: 100,
+                abs_deadline: 0,
                 computation_time: rng.gen_range(10..=100),
                 arrival_time: 0,
-                rel_deadline: 100,
-                finishing_time: 100,
-                response_time: 100,
+                rel_deadline: 0,
+                finishing_time: 0,
+                response_time: 0,
                 lateness: 0,
+                period:0
             });
+        }
+        
+        let period:i32 = nodes.iter().map(|node| node.computation_time).sum();
+        for node in nodes.iter_mut() {
+            node.period = period;
+            node.abs_deadline = period;
+            node.rel_deadline = node.abs_deadline - node.arrival_time;
         }
     }
 
