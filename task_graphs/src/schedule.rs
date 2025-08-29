@@ -7,7 +7,12 @@ impl Graph {
     /// Brings all tasks in feasible, sequential order and sets its parameters
     /// If multiple tasks can be executed at one point,
     /// the one with higher priority (number attribute) is taken.
-    pub fn distribute_parameters_uniprocessor(&mut self) -> Vec<i32> {
+    /// 
+    /// If utilization is given, it will be distributed among the nodes of the graph
+    /// For this the computation time of each task i is set to utilization[i] * period 
+    /// and finishing time, response time and lateness are set accordingly.
+    /// If now the computation time is 0 or higher than 100, a warning or error is printed out
+    pub fn distribute_parameters_uniprocessor(&mut self,utilization: &Vec<f64>) -> Vec<i32> {
         let schedule = self.schedule_tasks();
 
         // the deadline will be the start time of the next node in the schedule
@@ -16,14 +21,35 @@ impl Graph {
 
         for i in 0..schedule.len() {
             let node = self.find_node_by_name(schedule[i]);
+            if !utilization.is_empty() {
+               // This ensures utilitaion is distributed correctly
+                node.computation_time =
+                    (node.period as f64 * utilization[node.name as usize]).round() as i32;
+            }
             // Set start time and deadline
             node.start_time = pre_time;
-            node.abs_deadline = node.start_time + node.computation_time;
+            node.abs_deadline = node.period;
             node.rel_deadline = node.abs_deadline - node.arrival_time;
-            node.finishing_time = node.abs_deadline;
+            node.finishing_time = node.start_time + node.computation_time;
             node.response_time = node.finishing_time - node.arrival_time;
             node.lateness = node.finishing_time - node.abs_deadline;
-            pre_time = node.abs_deadline;
+            pre_time = node.finishing_time;
+        
+        
+            if node.computation_time > 100 || node.computation_time < 10 {
+                println!(
+                    "[WARNING] Computation time of task {} was set to {}!",
+                    node.name,node.computation_time
+                );
+            } 
+            if node.abs_deadline
+                < node.computation_time + node.start_time
+            {
+                println!(
+                    "[ERROR] Computation time of task {} is too high to be executable before its deadline!",
+                    node.name
+                );
+            }
         }
         schedule
     }
@@ -32,40 +58,22 @@ impl Graph {
     /// For this the computation time of each task i is set to utilization[i] * abs_deadline 
     /// and finishing time, response time and lateness are set accordingly.
     /// If now the computation time is 0 or higher than 100, a warning or error is printed out
-    pub fn distribute_parameters(&mut self, utilization: &Vec<f64>) {
-        for i in 0..self.nodes.len() {
-            // This ensures utilitaion is distributed correctly
-            self.nodes[i].computation_time =
-                (self.nodes[i].abs_deadline as f64 * utilization[i]).round() as i32;
+    // pub fn distribute_parameters(&mut self, utilization: &Vec<f64>) {
+    //     for i in 0..self.nodes.len() {
+    //         // This ensures utilitaion is distributed correctly
+    //         self.nodes[i].computation_time =
+    //             (self.nodes[i].abs_deadline as f64 * utilization[i]).round() as i32;
 
-            self.nodes[i].finishing_time =
-                self.nodes[i].start_time + self.nodes[i].computation_time;
-            self.nodes[i].response_time =
-                self.nodes[i].finishing_time - self.nodes[i].arrival_time;
-            self.nodes[i].lateness = self.nodes[i].finishing_time - self.nodes[i].abs_deadline;
+    //         self.nodes[i].finishing_time =
+    //             self.nodes[i].start_time + self.nodes[i].computation_time;
+    //         self.nodes[i].response_time =
+    //             self.nodes[i].finishing_time - self.nodes[i].arrival_time;
+    //         self.nodes[i].lateness = self.nodes[i].finishing_time - self.nodes[i].abs_deadline;
             
 
-            if self.nodes[i].computation_time == 0 {
-                println!(
-                    "[WARNING] Computation time of task {} was set to 0!",
-                    self.nodes[i].name
-                );
-            } else if self.nodes[i].computation_time > 100 {
-                println!(
-                    "[WARNING] Computation time of task {} was set to {}!",
-                    self.nodes[i].name,self.nodes[i].computation_time
-                );
-            } 
-            if self.nodes[i].abs_deadline
-                < self.nodes[i].computation_time + self.nodes[i].start_time
-            {
-                println!(
-                    "[ERROR] Computation time of task {} is too high to be executable before its deadline!",
-                    self.nodes[i].name
-                );
-            }
-        }
-    }
+            
+    //     }
+    // }
 
     /// Gets a mutable node object by its number
     fn find_node_by_name(&mut self, name: i32) -> &mut Node {

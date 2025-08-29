@@ -7,56 +7,49 @@ use std::process::Command;
 impl Graph {
     /// Writes the current graph with all its edges and nodes and their parameters into dot file.
     /// See also <https://graphviz.org/doc/info/lang.html>
-    pub fn write_dot(&self, path: &str, schedule: Vec<i32>, changed_comp: bool) -> Result<()> {
+    pub fn write_dot(&self, path: &str, schedule: Vec<i32>, uunifast:bool) -> Result<()> {
         let mut file = File::create(path)?;
         writeln!(file, "digraph {{")?;
 
+        let mut period = -1;
+        if let Some(first_node) = self.nodes.first() { // all graphs have at least one node
+            period = first_node.period; // T_1 = T_2 = ... = T_n
+        }
+
+
+        let mut ctext = "";
+        if !uunifast {
+            ctext = "is set to random value in {10..100}";
+        }
+
         // Description of labels
-        if !changed_comp {
-            writeln!(
-                file,
-                "label = <<br/>
-                            <b>Task Parameter</b> <br/>
-                            Computation time C<sub>i</sub> is set to random value in {{10..100}}<br/>
-                            Arrival/Release time a<sub>i</sub> is set to 0 for all i <br/>
-                            Absolute Deadline d<sub>i</sub> is set to s<sub>i</sub> + C<sub>i</sub> <br/>
-                            Relative Deadline D<sub>i</sub> = d<sub>i</sub> - a<sub>i</sub> = d<sub>i</sub> <br/>
-                            Start time s<sub>i</sub> <br/>
-                            Finishing time f<sub>i</sub> is set to d<sub>i</sub> <br/>
-                            Response time R<sub>i</sub> = f<sub>i</sub> - a<sub>i</sub> = f<sub>i</sub><br/> 
-                            Lateness L<sub>i</sub> = f<sub>i</sub> - d<sub>i</sub> = 0 <br/>
-                            Priority of task is defined by its number <br/>
-                            Schedule: {:?}
-                            >", schedule
-            )?;
-        } else { // is set to d<sub>i</sub> &ge; s<sub>i</sub> + C<sub>i</sub> <br/>
-            writeln!(
+        writeln!(
             file,
             "label = <<br/>
                         <b>Task Parameter</b> <br/>
-                        Computation time C<sub>i</sub> <br/>
-                        Arrival/Release time a<sub>i</sub> is set to 0 for all i <br/>
-                        Absolute Deadline d<sub>i</sub> <br/>
-                        Relative Deadline D<sub>i</sub> = d<sub>i</sub> - a<sub>i</sub> = d<sub>i</sub> <br/>
+                        Computation time C<sub>i</sub> {} <br/>
+                        Arrival/Release time a<sub>i</sub> is set to 0 <br/>
+                        Absolute Deadline d<sub>i</sub> is set to T<sub>i</sub> <br/>
+                        Relative Deadline D<sub>i</sub> = d<sub>i</sub> - a<sub>i</sub> <br/>
                         Start time s<sub>i</sub> <br/>
                         Finishing time f<sub>i</sub> = s<sub>i</sub> + C<sub>i</sub> <br/>
-                        Response time R<sub>i</sub> = f<sub>i</sub> - a<sub>i</sub> = f<sub>i</sub><br/> 
+                        Response time R<sub>i</sub> = f<sub>i</sub> - a<sub>i</sub><br/> 
                         Lateness L<sub>i</sub> = f<sub>i</sub> - d<sub>i</sub> <br/>
+                        Period T<sub>i</sub> is set to sum of all C<sub>i</sub> = {} <br/>
                         Priority of task is defined by its number <br/>
                         Schedule: {:?}
-                        >", schedule
+                        >", ctext,period,schedule
         )?;
-        }
 
         // Explicit definiton of all nodes for labeling each
         for node in &self.nodes {
             writeln!(
                 file,
-                "\t{} [label=\"{0}\",xlabel=<s<sub>{0}</sub> = {} <br/> C<sub>{0}</sub> = {} <br/> d<sub>{0}</sub> = {}>];",
+                "\t{} [label=\"{0}\",xlabel=<s<sub>{0}</sub> = {} <br/> C<sub>{0}</sub> = {} <br/> f<sub>{0}</sub> = {}>];",
                 node.name,
                 node.start_time,
                 node.computation_time,
-                node.abs_deadline
+                node.finishing_time
             )?;
         }
 
@@ -66,7 +59,7 @@ impl Graph {
         }
 
         writeln!(file, "}}")?;
-        println!("DOT successfully created '{}'", path);
+        //println!("DOT successfully created '{}'", path);
         Ok(())
     }
 
@@ -74,12 +67,12 @@ impl Graph {
     pub fn write_parameters(&self, path: &str) -> Result<()> {
         let mut file = File::create(path)?;
         // Column description
-        writeln!(file, "Task/Priority\tStart time\tComputation time\tAbsolute deadline\tRelative deadline\tFinishing time\tResponse time\tLateness\tArrival time\tUtilization")?;
+        writeln!(file, "Task/Priority\tStart time\tComputation time\tAbsolute deadline\tRelative deadline\tFinishing time\tResponse time\tLateness\tArrival time\tPeriod\tUtilization")?;
         // Row for each node
         for node in &self.nodes {
             writeln!(
                 file,
-                "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
+                "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
                 node.name, 
                 node.start_time, 
                 node.computation_time, 
@@ -89,6 +82,7 @@ impl Graph {
                 node.response_time,
                 node.lateness,
                 node.arrival_time,
+                node.period,
                 node.computation_time as f64 /node.abs_deadline as f64
             )?;
         }
@@ -116,9 +110,7 @@ impl Graph {
             .arg(output_svg_path)
             .status()?;
 
-        if status.success() {
-            println!("SVG successfully created '{}'", output_svg_path);
-        } else {
+        if !status.success() {
             panic!("Error while converting dot to svg");
         }
         
@@ -130,9 +122,7 @@ impl Graph {
         .arg(output_png_path)
         .status()?;
 
-        if status.success() {
-            println!("Png successfully created '{}'", output_png_path);
-        } else {
+        if !status.success() {
             panic!("Error while converting dot to png");
         }
 
