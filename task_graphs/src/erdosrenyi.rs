@@ -7,7 +7,7 @@ use std::collections::HashSet;
 
 impl Graph {
     /// Adds n new nodes to the given vector and sets for each node a number as name and
-    /// default values for start_time, arrival_time, deadline, computation_time
+    /// default values for all other node parameters
     fn initialize_nodes(nodes: &mut Vec<Node>, n: i32) {
         let mut rng = rand::thread_rng();
         for node in 0..n {
@@ -21,11 +21,12 @@ impl Graph {
                 finishing_time: 0,
                 response_time: 0,
                 lateness: 0,
-                period:0
+                period: 0,
             });
         }
-        
-        let period:i32 = nodes.iter().map(|node| node.computation_time).sum();
+
+        // The period is set to sum of all computation times
+        let period: i32 = nodes.iter().map(|node| node.computation_time).sum();
         for node in nodes.iter_mut() {
             node.period = period;
             node.abs_deadline = period;
@@ -33,7 +34,7 @@ impl Graph {
         }
     }
 
-    /// Generates a graph with n nodes where each edge is included with independent probability p
+    /// Generates a directed acyclic graph with n nodes where each edge is included with independent probability p
     pub fn new_erdos_renyi_var1(n: i32, p: f64) -> Self {
         assert!(
             0.0 <= p && p <= 1.0,
@@ -72,7 +73,7 @@ impl Graph {
         Graph { nodes, edges }
     }
 
-    /// Generates a graph with n nodes and m edges chosen uniformly at random
+    /// Generates a directed acyclic graph with n nodes and m edges chosen uniformly at random
     pub fn new_erdos_renyi_var2(n: i32, m: i32) -> Self {
         // In directed graphes we can have twice the amount of edges in comparison to undirected graphes,
         // BUT as soon as we have more than an undirected complete graph there has to be a cycle,

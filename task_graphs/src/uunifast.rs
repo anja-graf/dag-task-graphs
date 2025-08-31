@@ -3,12 +3,13 @@ use rand::Rng;
 pub struct UUnifast;
 
 impl UUnifast {
-    /// Calls uunifast algorithm 
+    /// Calls uunifast algorithm and returns utilization vector with length n that adds up to u
     pub fn call_uunifast(n: i32, u: f64) -> Vec<f64> {
-        // Slide 7 on VL04_SchedulingPeriodic
-        // U_i = C_i / T_i and sum of all U_i must be <= 1 (else not schedulable)
-        println!("\n\nDistributing total processor utilization U = {} with uunifast",u);
-        let utilization: Vec<f64> = UUnifast::uunifast(n,u);
+        println!(
+            "\n\nDistributing total processor utilization U = {} with uunifast",
+            u
+        );
+        let utilization: Vec<f64> = UUnifast::uunifast(n, u);
         assert!(utilization.len() == n as usize);
         utilization
     }
@@ -17,6 +18,8 @@ impl UUnifast {
     /// Page 6, upper right before '4. Simulation results'
     /// To efficiently generate task sets with uniform distribution and with O(n) complexity
     fn uunifast(n: i32, u: f64) -> Vec<f64> {
+        // Slide 7 on VL04_SchedulingPeriodic
+        // U_i = C_i / T_i and sum of all U_i must be <= 1 (else not schedulable)
         assert!(
             u <= 1.0 && u >= 0.0,
             "The processor utilization should be value between 0 and 1"
