@@ -40,8 +40,7 @@ fn main() -> Result<()> {
         edge_distribution = generate_random_edge_distribution(&node_distribution, args.edges);
     }
 
-    let mut all_graphs: Vec<Graph> = Vec::new(); // Here all graphs are stored, so length is equal to args.graphs
-    let mut all_periods: Vec<i32> = Vec::new(); // Periods are set to the same value for each graph which is sum of all C_i
+    let mut all_graphs: Vec<Graph> = Vec::new(); // Here all graphs are stored, so length is equal to args.graph
 
     // Generate DAG with variant of erdos renyi model
     generate_random_directed_acyclic_graphs(
@@ -49,11 +48,12 @@ fn main() -> Result<()> {
         &node_distribution,
         &mut edge_distribution,
         &mut all_graphs,
-        &mut all_periods,
     );
 
+    let period = set_periods(&mut all_graphs);
+
     // Generate utilization vector with chosen algorithm (uunifast or drs)
-    let utilization = generate_utilization(&args, all_periods, &node_distribution);
+    let utilization = generate_utilization(&args, period);
 
     let mut offset = 0;
     for (i, graph) in all_graphs.iter_mut().enumerate() {
@@ -139,8 +139,7 @@ fn generate_random_directed_acyclic_graphs(
     args: &Args,
     node_distribution: &Vec<i32>,
     edge_distribution: &mut Vec<i32>,
-    all_graphs: &mut Vec<Graph>,
-    all_periods: &mut Vec<i32>,
+    all_graphs: &mut Vec<Graph>
 ) {
     for i in 0..args.graphs {
         // Depending on the specified option a function is used to generate the graph
@@ -168,10 +167,6 @@ fn generate_random_directed_acyclic_graphs(
             panic!("Error: Invalid option!");
         }
 
-        if let Some(first_node) = graph.nodes.first() {
-            // all graphs have at least one node
-            all_periods.push(first_node.period); // T_1 = T_2 = ... = T_n
-        }
 
         all_graphs.push(graph);
     }
@@ -180,8 +175,7 @@ fn generate_random_directed_acyclic_graphs(
 // Generates task utilization with uunifast or drs algorithm for all graphs 
 fn generate_utilization(
     args: &Args,
-    all_periods: Vec<i32>,
-    node_distribution: &Vec<i32>,
+    period: i32,
 ) -> Vec<f64> {
     let mut utilization: Vec<f64> = Vec::new(); // Here all task utilizations are stored, so length is equal to args.nodes
     if let Some(u) = &args.uunifast_utilization {
@@ -198,9 +192,27 @@ fn generate_utilization(
             *u,
             lower,
             upper,
-            all_periods,
-            &node_distribution,
+            period
         );
     }
     utilization
+}
+
+fn set_periods(all_graphs: &mut Vec<Graph>) -> i32 {
+    
+    // The period is set to sum of all computation times
+    let period: i32 = all_graphs
+        .iter()
+        .flat_map(|graph| &graph.nodes)
+        .map(|node| node.computation_time)
+        .sum();
+
+    for graph in all_graphs {
+        for node in graph.nodes.iter_mut() {
+            node.period = period;
+            node.abs_deadline = period;
+            node.rel_deadline = node.abs_deadline - node.arrival_time;
+        }
+    }
+    period
 }

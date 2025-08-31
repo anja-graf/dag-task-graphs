@@ -36,7 +36,7 @@ impl Graph {
                         Finishing time f<sub>i</sub> = s<sub>i</sub> + C<sub>i</sub> <br/>
                         Response time R<sub>i</sub> = f<sub>i</sub> - a<sub>i</sub><br/> 
                         Lateness L<sub>i</sub> = f<sub>i</sub> - d<sub>i</sub> <br/>
-                        Period T<sub>i</sub> is set to sum of all C<sub>i</sub> = {} <br/>
+                        Period T<sub>i</sub> is set to {} <br/>
                         Priority of task is defined by its number <br/>
                         Schedule: {:?}
                         >",

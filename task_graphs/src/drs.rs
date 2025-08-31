@@ -15,8 +15,7 @@ impl DRS {
         u: f64,
         lower_bounds: Option<Vec<f64>>,
         upper_bounds: Option<Vec<f64>>,
-        all_periods: Vec<i32>,
-        node_distribution: &Vec<i32>,
+        period: i32
     ) -> Vec<f64> {
         println!(
             "\n\nDistributing total processor utilization U = {} with drs",
@@ -40,9 +39,7 @@ impl DRS {
                 "Generating default upper bounds that ensure the task has an execution time of at most 100"
             );
             let mut default = Vec::new();
-            for (i, &t_i) in all_periods.iter().enumerate() {
-                default.extend(vec![100.0 / t_i as f64; node_distribution[i] as usize]);
-            }
+            default.extend(vec![100.0 / period as f64; n as usize]);
             default
         };
         let lower: Vec<f64> = if let Some(ref lower) = lower_bounds {
@@ -56,9 +53,7 @@ impl DRS {
                 "Generating default lower bounds that ensure the task has an execution time of at least 10"
             );
             let mut default = Vec::new();
-            for (i, &t_i) in all_periods.iter().enumerate() {
-                default.extend(vec![10.0 / t_i as f64; node_distribution[i] as usize]);
-            }
+            default.extend(vec![10.0 / period as f64; n as usize]);
             default
         };
 

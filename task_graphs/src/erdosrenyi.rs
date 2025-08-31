@@ -24,14 +24,6 @@ impl Graph {
                 period: 0,
             });
         }
-
-        // The period is set to sum of all computation times
-        let period: i32 = nodes.iter().map(|node| node.computation_time).sum();
-        for node in nodes.iter_mut() {
-            node.period = period;
-            node.abs_deadline = period;
-            node.rel_deadline = node.abs_deadline - node.arrival_time;
-        }
     }
 
     /// Generates a directed acyclic graph with n nodes where each edge is included with independent probability p
