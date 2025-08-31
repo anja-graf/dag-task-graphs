@@ -9,15 +9,11 @@ label = <<br/>
                         Finishing time f<sub>i</sub> = s<sub>i</sub> + C<sub>i</sub> <br/>
                         Response time R<sub>i</sub> = f<sub>i</sub> - a<sub>i</sub><br/> 
                         Lateness L<sub>i</sub> = f<sub>i</sub> - d<sub>i</sub> <br/>
-                        Period T<sub>i</sub> is set to sum of all C<sub>i</sub> = 204 <br/>
+                        Period T<sub>i</sub> is set to 434 <br/>
                         Priority of task is defined by its number <br/>
-                        Schedule: [1, 2, 0, 3]
+                        Schedule: [0, 1]
                         >
-	0 [label="0",xlabel=<s<sub>0</sub> = 56 <br/> C<sub>0</sub> = 39 <br/> f<sub>0</sub> = 95>];
-	1 [label="1",xlabel=<s<sub>1</sub> = 0 <br/> C<sub>1</sub> = 11 <br/> f<sub>1</sub> = 11>];
-	2 [label="2",xlabel=<s<sub>2</sub> = 11 <br/> C<sub>2</sub> = 45 <br/> f<sub>2</sub> = 56>];
-	3 [label="3",xlabel=<s<sub>3</sub> = 95 <br/> C<sub>3</sub> = 39 <br/> f<sub>3</sub> = 134>];
-	2 -> 0;
-	2 -> 3;
-	1 -> 0;
+	0 [label="0",xlabel=<s<sub>0</sub> = 0 <br/> C<sub>0</sub> = 40 <br/> f<sub>0</sub> = 40>];
+	1 [label="1",xlabel=<s<sub>1</sub> = 40 <br/> C<sub>1</sub> = 13 <br/> f<sub>1</sub> = 53>];
+	0 -> 1;
 }

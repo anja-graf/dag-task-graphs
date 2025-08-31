@@ -62,7 +62,7 @@ fn main() -> Result<()> {
         if args.uunifast_utilization.is_some() || args.drs_utilization.is_some() {
             sub_u = utilization[offset..offset + node_distribution[i] as usize].to_vec();
             offset += node_distribution[i] as usize; // Offset signals start of U_i values for current graph i
-            println!("\n\nSubvector for utilization of graph {}: {:?}", i, sub_u);
+            println!("\n\nSubvector for utilization of graph {}: {:?}", i + 1, sub_u);
         }
 
         // Find execution order for all tasks in current graph i
