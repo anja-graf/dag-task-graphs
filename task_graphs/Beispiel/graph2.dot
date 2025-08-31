@@ -1,0 +1,19 @@
+digraph {
+label = <<br/>
+                        <b>Task Parameter</b> <br/>
+                        Computation time C<sub>i</sub> is set to random value in {10..100} <br/>
+                        Arrival/Release time a<sub>i</sub> is set to 0 <br/>
+                        Absolute Deadline d<sub>i</sub> is set to T<sub>i</sub> <br/>
+                        Relative Deadline D<sub>i</sub> = d<sub>i</sub> - a<sub>i</sub> <br/>
+                        Start time s<sub>i</sub> <br/>
+                        Finishing time f<sub>i</sub> = s<sub>i</sub> + C<sub>i</sub> <br/>
+                        Response time R<sub>i</sub> = f<sub>i</sub> - a<sub>i</sub><br/> 
+                        Lateness L<sub>i</sub> = f<sub>i</sub> - d<sub>i</sub> <br/>
+                        Period T<sub>i</sub> is set to sum of all C<sub>i</sub> = 104 <br/>
+                        Priority of task is defined by its number <br/>
+                        Schedule: [0, 1]
+                        >
+	0 [label="0",xlabel=<s<sub>0</sub> = 0 <br/> C<sub>0</sub> = 16 <br/> f<sub>0</sub> = 16>];
+	1 [label="1",xlabel=<s<sub>1</sub> = 16 <br/> C<sub>1</sub> = 20 <br/> f<sub>1</sub> = 36>];
+	0 -> 1;
+}

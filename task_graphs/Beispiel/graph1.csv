@@ -1,0 +1,5 @@
+Task/Priority	Start time	Computation time	Absolute deadline	Relative deadline	Finishing time	Response time	Lateness	Arrival time	Period	Utilization
+0	56	39	204	204	95	95	-109	0	204	0.19117647058823528
+1	0	11	204	204	11	11	-193	0	204	0.05392156862745098
+2	11	45	204	204	56	56	-148	0	204	0.22058823529411764
+3	95	39	204	204	134	134	-70	0	204	0.19117647058823528

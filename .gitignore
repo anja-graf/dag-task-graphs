@@ -31,3 +31,5 @@ vortrag kopie.tex
 *.run.xml
 *.lof
 *.lot
+
+!task_graphs/Beispiel/*
