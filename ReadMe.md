@@ -1,3 +1,9 @@
+# Short Description of this project: 
+A rust command-line tool for generating random directed acyclic task graphs.
+As a starting point Erdős–Rényi models G(n,p) and G(n,m) are used in combination with cycle detection mechanism. From there a priority-based execution order is determined and all task parameters are assigned, including priority, arrival time, start time, computation time, finishing time, absolute deadline, relative deadline, response time, lateness. Lastly, the final scheduled task graph is output and visualized using Graphviz. Additionally, processor utilization can optionally be assigned using UUniFast and DRS algorithms.
+
+
+
 # Generierung von Task Graphen 
 
 Mit diesem Programm lassen sich verschiedene Task Graphen generieren. Dafür kann mittels `cargo run [ARGS]` im `task_graphs` Ordner das Projekt kompiliert und ausgeführt werden. 
